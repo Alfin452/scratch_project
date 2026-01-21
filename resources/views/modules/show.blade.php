@@ -1,4 +1,7 @@
-<x-app-layout>
+<x-dynamic-component :component="Auth::user()->isTeacher() ? 'app-layout' : 'student-layout'">
+
+    {{-- SLOT HEADER: Hanya muncul untuk Guru (Admin Layout) --}}
+    @if(Auth::user()->isTeacher())
     <x-slot name="header">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <h2 class="font-bold text-xl text-gray-800 dark:text-gray-200 leading-tight">
@@ -12,14 +15,27 @@
             </a>
         </div>
     </x-slot>
+    @endif
 
     <div class="py-6 md:py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
+            {{-- Breadcrumb Khusus Siswa (Pengganti Header Admin) --}}
+            @if(!Auth::user()->isTeacher())
+            <div class="mb-6 px-4 md:px-0">
+                <a href="{{ route('modules.index') }}" class="inline-flex items-center text-sm font-medium text-gray-500 hover:text-indigo-600 transition">
+                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                    Kembali ke Materi
+                </a>
+            </div>
+            @endif
+
             <div class="flex flex-col lg:flex-row gap-6">
 
-                <div class="w-full lg:w-1/4">
-                    <div class="bg-white dark:bg-gray-800 shadow-lg rounded-xl overflow-hidden sticky top-6 border border-gray-100 dark:border-gray-700">
+                <div class="w-full lg:w-1/4 px-4 md:px-0">
+                    <div class="bg-white dark:bg-gray-800 shadow-lg rounded-xl overflow-hidden sticky top-24 border border-gray-100 dark:border-gray-700">
                         <div class="p-4 bg-indigo-50 dark:bg-gray-700 border-b border-indigo-100 dark:border-gray-600">
                             <h3 class="font-bold text-indigo-900 dark:text-indigo-300 text-sm uppercase tracking-wide">Daftar Materi</h3>
                         </div>
@@ -36,10 +52,10 @@
                     </div>
                 </div>
 
-                <div class="w-full lg:w-3/4">
+                <div class="w-full lg:w-3/4 px-4 md:px-0">
                     <div class="bg-white dark:bg-gray-800 shadow-xl rounded-xl border border-gray-100 dark:border-gray-700 overflow-hidden min-h-[500px] flex flex-col">
 
-                        <div class="p-6 md:p-10 border-b border-gray-100 dark:border-gray-700">
+                        <div class="p-6 md:p-10 border-b border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800">
                             <span class="inline-block py-1 px-3 rounded-full bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300 text-xs font-bold tracking-wide mb-3">
                                 BAB {{ $module->order }}
                             </span>
@@ -51,7 +67,7 @@
                             </p>
                         </div>
 
-                        <div class="p-6 md:p-10 flex-1">
+                        <div class="p-6 md:p-10 flex-1 bg-white dark:bg-gray-800">
                             <div class="prose prose-indigo prose-lg max-w-none dark:prose-invert 
                                 prose-headings:font-bold prose-headings:text-gray-800 dark:prose-headings:text-gray-100
                                 prose-p:text-gray-600 dark:prose-p:text-gray-300 prose-p:leading-relaxed
@@ -206,4 +222,4 @@
             </div>
         </div>
     </div>
-</x-app-layout>
+</x-dynamic-component>

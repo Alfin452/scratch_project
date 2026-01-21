@@ -102,4 +102,31 @@ class SubmissionController extends Controller
 
         return view('submissions.gradebook', compact('modules'));
     }
+
+    // Menampilkan riwayat pengumpulan siswa
+    public function history()
+    {
+        $submissions = \App\Models\Submission::with(['task.module'])
+            ->where('user_id', \Illuminate\Support\Facades\Auth::id())
+            ->latest()
+            ->get();
+
+        return view('student.activity', compact('submissions'));
+    }
+
+    // Menampilkan Peringkat / Leaderboard
+    public function leaderboard()
+    {
+        // Ambil semua user dengan role 'student'
+        // Hitung total score dari relasi submissions
+        // Urutkan dari yang terbesar (descending)
+        // Ambil 50 besar saja biar tidak berat
+        $students = \App\Models\User::where('role', 'student')
+            ->withSum('submissions', 'score')
+            ->orderByDesc('submissions_sum_score')
+            ->take(50)
+            ->get();
+
+        return view('student.leaderboard', compact('students'));
+    }
 }

@@ -131,4 +131,18 @@ class TaskController extends Controller
 
         return redirect()->route('modules.show', $moduleId)->with('success', 'Tugas berhasil dihapus!');
     }
+
+    // Menampilkan daftar semua tugas untuk siswa
+    public function studentIndex()
+    {
+        $user = \Illuminate\Support\Facades\Auth::user();
+
+        // Ambil semua tugas, urutkan dari yang terbaru
+        // Kita load juga submission milik user yang sedang login untuk cek status
+        $tasks = \App\Models\Task::with(['module', 'submissions' => function ($q) use ($user) {
+            $q->where('user_id', $user->id);
+        }])->get();
+
+        return view('student.tasks.index', compact('tasks'));
+    }
 }

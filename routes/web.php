@@ -7,6 +7,7 @@ use App\Http\Controllers\TaskController;
 use App\Http\Controllers\WorkspaceController;
 use App\Http\Controllers\SubmissionController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Auth\SocialiteController;
 
 
 Route::get('/', function () {
@@ -14,7 +15,8 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-
+Route::get('/auth/google', [SocialiteController::class, 'redirect'])->name('auth.google');
+Route::get('/auth/google/callback', [SocialiteController::class, 'callback']);
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -39,6 +41,12 @@ Route::middleware('auth')->group(function () {
     Route::put('/submissions/{submission}/grade', [SubmissionController::class, 'grade'])->name('submissions.grade');
 
     Route::get('/gradebook', [SubmissionController::class, 'gradebook'])->name('submissions.gradebook');
+
+    // Route Khusus Siswa
+    Route::get('/student/tasks', [App\Http\Controllers\TaskController::class, 'studentIndex'])->name('student.tasks');
+    Route::get('/student/activity', [App\Http\Controllers\SubmissionController::class, 'history'])->name('student.activity');
+
+    Route::get('/student/leaderboard', [App\Http\Controllers\SubmissionController::class, 'leaderboard'])->name('student.leaderboard');
     });
 
 require __DIR__.'/auth.php';
