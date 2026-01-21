@@ -8,6 +8,7 @@ use App\Http\Controllers\WorkspaceController;
 use App\Http\Controllers\SubmissionController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Auth\SocialiteController;
+use App\Http\Controllers\IndependentTaskController;
 
 
 Route::get('/', function () {
@@ -36,7 +37,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/workspace/task/{task}', [WorkspaceController::class, 'show'])->name('workspace.show');
 
     Route::post('/tasks/{task}/submit', [SubmissionController::class, 'store'])->name('submissions.store');
-
+    Route::post('/workspace/task/{task}/submit', [WorkspaceController::class, 'submit'])->name('workspace.submit'); // <-- Tambahkan ini
     Route::get('/tasks/{task}/submissions', [SubmissionController::class, 'index'])->name('submissions.index');
     Route::put('/submissions/{submission}/grade', [SubmissionController::class, 'grade'])->name('submissions.grade');
 
@@ -47,6 +48,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/student/activity', [App\Http\Controllers\SubmissionController::class, 'history'])->name('student.activity');
 
     Route::get('/student/leaderboard', [App\Http\Controllers\SubmissionController::class, 'leaderboard'])->name('student.leaderboard');
+
+    Route::resource('independent-tasks', IndependentTaskController::class)->except(['show', 'edit', 'update']);
     });
 
 require __DIR__.'/auth.php';

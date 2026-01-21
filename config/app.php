@@ -65,8 +65,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
-
+    'timezone' => 'Asia/Makassar', // Ubah dari 'UTC' ke 'Asia/Makassar'
     /*
     |--------------------------------------------------------------------------
     | Application Locale Configuration
