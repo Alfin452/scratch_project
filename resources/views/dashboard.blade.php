@@ -12,8 +12,7 @@ if ($hour >= 5 && $hour < 11) {
             }
             @endphp
 
-            <x-app-layout>
-            <x-slot name="header">
+            <x-dynamic-component :component="Auth::user()->isTeacher() ? 'app-layout' : 'student-layout'"> <x-slot name="header">
                 <h2 class="font-bold text-xl text-gray-800 dark:text-gray-200 leading-tight">
                     {{ __('Dashboard Overview') }}
                 </h2>
@@ -308,4 +307,4 @@ if ($hour >= 5 && $hour < 11) {
 
                 </div>
             </div>
-            </x-app-layout>
+            </x-dynamic-component>

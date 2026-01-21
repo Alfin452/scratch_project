@@ -1,5 +1,4 @@
-<x-app-layout>
-    <x-slot name="header">
+<x-dynamic-component :component="Auth::user()->isTeacher() ? 'app-layout' : 'student-layout'"> <x-slot name="header">
         <h2 class="font-bold text-xl text-gray-800 dark:text-gray-200 leading-tight">
             {{ __('Manajemen Pembelajaran') }}
         </h2>
@@ -156,4 +155,4 @@
             })
         }
     </script>
-</x-app-layout>
+</x-dynamic-component>
