@@ -24,12 +24,13 @@ class WorkspaceController extends Controller
 
     public function submit(\Illuminate\Http\Request $request, \App\Models\Task $task)
     {
-        // 1. Validasi File (Harus .sb3 dan maks 10MB)
+        // 1. Validasi File
         $request->validate([
             'project_file' => 'required|file|extensions:sb3|max:10240',
         ]);
 
         // 2. Simpan File ke Storage
+        // Hasilnya path string, misal: "submissions/abcde12345.sb3"
         $path = $request->file('project_file')->store('submissions', 'public');
 
         // 3. Cari Data Submission Lama (Cek apakah siswa sudah pernah kumpul?)
@@ -38,25 +39,29 @@ class WorkspaceController extends Controller
             ->first();
 
         if ($submission) {
-            // Jika sudah ada, Update (Hapus file lama dulu biar server gak penuh)
-            if ($submission->file_path) {
-                \Illuminate\Support\Facades\Storage::disk('public')->delete($submission->file_path);
+            // Jika sudah ada, Update
+
+            // Hapus file lama fisik biar hemat storage
+            if ($submission->project_file_path) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($submission->project_file_path);
             }
 
             $submission->update([
-                'file_path' => $path,
-                'status' => 'submitted', // Reset status jadi 'menunggu penilaian' jika re-upload
+                // PERHATIKAN: Key array harus SAMA PERSIS dengan nama kolom database
+                'project_file_path' => $path,  // <--- JANGAN SALAH KETIK DISINI
+                'status' => 'submitted',
             ]);
         } else {
             // Jika belum ada, Buat Baru
             \App\Models\Submission::create([
                 'user_id' => \Illuminate\Support\Facades\Auth::id(),
                 'task_id' => $task->id,
-                'file_path' => $path,
+                // PERHATIKAN: Key array harus SAMA PERSIS dengan nama kolom database
+                'project_file_path' => $path,  // <--- JANGAN SALAH KETIK DISINI
                 'status' => 'submitted',
             ]);
         }
 
-        return back()->with('success', 'Tugas berhasil dikumpulkan! Guru akan segera menilainya.');
+        return back()->with('success', 'Tugas berhasil dikumpulkan!');
     }
 }

@@ -89,18 +89,25 @@ class SubmissionController extends Controller
     }
 
     // Halaman Dashboard Penilaian (Daftar Semua Tugas)
+    // Halaman Dashboard Penilaian (Daftar Semua Tugas)
     public function gradebook()
     {
         /** @var User $user */
-        $user = Auth::user();
+        $user = \Illuminate\Support\Facades\Auth::user();
         if (!$user->isTeacher()) abort(403);
 
-        // Ambil semua modul beserta tugas-tugasnya dan hitung jumlah submission
+        // 1. Ambil Modul beserta tugas-tugasnya (Logic Lama)
         $modules = \App\Models\Module::with(['tasks' => function ($query) {
-            $query->withCount('submissions'); // Menghitung berapa siswa yang sudah kumpul
+            $query->withCount('submissions');
         }])->orderBy('order')->get();
 
-        return view('submissions.gradebook', compact('modules'));
+        // 2. TAMBAHAN BARU: Ambil Tugas Mandiri (yang module_id-nya NULL)
+        $independentTasks = \App\Models\Task::whereNull('module_id')
+            ->withCount('submissions')
+            ->latest()
+            ->get();
+
+        return view('submissions.gradebook', compact('modules', 'independentTasks'));
     }
 
     // Menampilkan riwayat pengumpulan siswa
@@ -128,5 +135,26 @@ class SubmissionController extends Controller
             ->get();
 
         return view('student.leaderboard', compact('students'));
+    }
+
+    // Fungsi untuk memaksa download sebagai .sb3
+    public function download(\App\Models\Submission $submission)
+    {
+        // Pastikan file ada di storage
+        if (!\Illuminate\Support\Facades\Storage::disk('public')->exists($submission->project_file_path)) {
+            return back()->with('error', 'File tidak ditemukan di server.');
+        }
+
+        // Buat nama file yang rapi: "NamaSiswa - JudulTugas.sb3"
+        // Str::slug membersihkan karakter aneh agar aman
+        $cleanName = \Illuminate\Support\Str::slug($submission->user->name) . '-' .
+            \Illuminate\Support\Str::slug($submission->task->title) . '.sb3';
+
+        // Paksa download dengan header yang benar
+        return \Illuminate\Support\Facades\Storage::disk('public')->download(
+            $submission->project_file_path,
+            $cleanName,
+            ['Content-Type' => 'application/x.scratch.sb3']
+        );
     }
 }

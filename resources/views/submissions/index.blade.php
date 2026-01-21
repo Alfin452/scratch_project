@@ -9,12 +9,23 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
             <div class="mb-4">
+                {{-- PERBAIKAN: Cek apakah ada module_id --}}
+                @if($task->module_id)
                 <a href="{{ route('modules.show', $task->module_id) }}" class="text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 font-medium flex items-center gap-1">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                     </svg>
                     Kembali ke Modul
                 </a>
+                @else
+                {{-- Jika Tugas Mandiri, kembali ke Gradebook / Bank Soal --}}
+                <a href="{{ route('submissions.gradebook') }}" class="text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 font-medium flex items-center gap-1">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                    </svg>
+                    Kembali ke Rekapitulasi
+                </a>
+                @endif
             </div>
 
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-2xl border border-gray-100 dark:border-gray-700">
@@ -48,12 +59,17 @@
                                     </td>
 
                                     <td class="px-6 py-4">
-                                        <a href="{{ asset('storage/' . $sub->project_file_path) }}" download class="text-indigo-600 hover:text-indigo-900 font-medium flex items-center gap-1">
+                                        {{-- Link Download Project --}}
+                                        @if($sub->project_file_path)
+                                        <a href="{{ route('submissions.download', $sub->id) }}" class="text-indigo-600 hover:text-indigo-900 font-medium flex items-center gap-1">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
                                             </svg>
                                             Download .sb3
                                         </a>
+                                        @else
+                                        <span class="text-red-500 text-xs italic">File Hilang/Rusak</span>
+                                        @endif
                                     </td>
 
                                     <td class="px-6 py-4">
@@ -93,6 +109,7 @@
         </div>
     </div>
 
+    {{-- MODAL PENILAIAN --}}
     <div id="gradeModal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
         <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
             <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" onclick="closeGradeModal()"></div>
@@ -140,7 +157,7 @@
         function openGradeModal(submissionId, studentName, currentScore, currentFeedback) {
             // Set Action URL form secara dinamis
             const form = document.getElementById('gradeForm');
-            form.action = `/submissions/${submissionId}/grade`; // Sesuaikan path ini jika perlu
+            form.action = `/submissions/${submissionId}/grade`;
 
             // Isi data ke dalam modal
             document.getElementById('studentName').textContent = studentName;

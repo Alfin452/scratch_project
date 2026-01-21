@@ -2,14 +2,16 @@
 
     {{-- CSS Khusus untuk Workspace Full Screen --}}
     <style>
-        /* Sembunyikan Navbar bawaan layout agar workspace terasa "App-like" */
+        /* Sembunyikan Navbar & Header bawaan Layout UTAMA saja */
         nav {
             display: none !important;
         }
 
-        header {
+        body>div>header {
             display: none !important;
         }
+
+        /* Hanya sembunyikan header layout */
 
         .min-h-screen {
             height: 100vh;
@@ -28,26 +30,30 @@
 
     <div class="font-sans antialiased bg-gray-100 h-screen flex flex-col" x-data="{ sidebarOpen: true, activeTab: 'instruction' }">
 
-        <header class="h-14 bg-indigo-900 text-white flex items-center justify-between px-4 shadow-md z-30 relative shrink-0">
+        <div class="h-14 bg-indigo-900 text-white flex items-center justify-between px-4 shadow-md z-30 relative shrink-0">
             <div class="flex items-center gap-4">
-                {{-- LOGIKA TOMBOL KEMBALI --}}
+
+                {{-- === LOGIKA TOMBOL KEMBALI === --}}
                 @php
                 $backRoute = '#';
                 if ($task->module_id) {
+                // Jika tugas bagian dari modul
                 $backRoute = route('modules.show', $task->module_id);
                 } else {
+                // Jika tugas mandiri (cek role user)
                 $backRoute = Auth::user()->isTeacher() ? route('independent-tasks.index') : route('student.tasks');
                 }
                 @endphp
 
-                <a href="{{ $backRoute }}" class="text-indigo-300 hover:text-white transition flex items-center gap-1 text-sm font-medium">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <a href="{{ $backRoute }}" class="text-indigo-300 hover:text-white transition flex items-center gap-2 text-sm font-medium px-3 py-1.5 hover:bg-indigo-800 rounded-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                     </svg>
-                    Keluar
+                    <span>Keluar</span>
                 </a>
-                <div class="flex items-center gap-2 border-l border-indigo-700 pl-4">
-                    <span class="bg-indigo-800 text-xs px-2 py-0.5 rounded text-indigo-200">
+
+                <div class="flex items-center gap-3 border-l border-indigo-700 pl-4">
+                    <span class="bg-indigo-800 text-xs px-2 py-0.5 rounded text-indigo-200 uppercase tracking-wide">
                         {{ $task->module_id ? 'Bab ' . $task->module->order : 'Tugas Mandiri' }}
                     </span>
                     <h1 class="font-bold text-lg truncate max-w-xs md:max-w-md">{{ $task->title }}</h1>
@@ -55,7 +61,7 @@
             </div>
 
             <div class="flex items-center gap-3">
-                <div class="text-xs text-indigo-300 hidden md:block">
+                <div class="text-xs text-indigo-300 hidden md:block border-r border-indigo-700 pr-3 mr-1">
                     {{ Auth::user()->name }}
                 </div>
 
@@ -72,7 +78,7 @@
                     </button>
                 </form>
             </div>
-        </header>
+        </div>
 
         <div class="flex-1 flex overflow-hidden relative">
 
