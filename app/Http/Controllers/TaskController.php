@@ -34,37 +34,28 @@ class TaskController extends Controller
      */
     public function store(Request $request, Module $module)
     {
-        /** @var User $user */
-        $user = Auth::user();
-        if (!$user->isTeacher()) abort(403);
-
         $request->validate([
             'title' => 'required|string|max:255',
             'instruction' => 'required|string',
-            // UBAH BARIS INI:
-            // Kita izinkan ekstensi sb3 secara eksplisit, dan naikkan limit max jadi 10MB (10240 KB)
-            'starter_file' => 'nullable|file|extensions:sb3,zip|max:10240',
-        ], [
-            // Custom pesan error agar lebih jelas
-            'starter_file.extensions' => 'File harus berekstensi .sb3',
-            'starter_file.max' => 'Ukuran file tidak boleh lebih dari 10MB',
+            'deadline' => 'nullable|date', // Validasi tanggal
+            'starter_file' => 'nullable|file|extensions:sb3|max:10240',
         ]);
 
         $path = null;
         if ($request->hasFile('starter_file')) {
-            $path = $request->file('starter_file')->store('starters', 'public');
+            $path = $request->file('starter_file')->store('starter_projects', 'public');
         }
 
         Task::create([
             'module_id' => $module->id,
             'title' => $request->title,
             'instruction' => $request->instruction,
+            'deadline' => $request->deadline, // Simpan deadline
             'starter_project_path' => $path,
         ]);
 
-        return redirect()->route('modules.show', $module->id)->with('success', 'Tugas praktik berhasil ditambahkan!');
+        return redirect()->route('modules.show', $module->id)->with('success', 'Tugas berhasil ditambahkan!');
     }
-
     /**
      * Show the form for editing the specified resource.
      */
@@ -82,35 +73,28 @@ class TaskController extends Controller
      */
     public function update(Request $request, Task $task)
     {
-        /** @var User $user */
-        $user = Auth::user();
-        if (!$user->isTeacher()) abort(403);
-
         $request->validate([
             'title' => 'required|string|max:255',
             'instruction' => 'required|string',
-            'starter_file' => 'nullable|file|mimes:sb3,zip|max:5120',
+            'deadline' => 'nullable|date', // Validasi tanggal
+            'starter_file' => 'nullable|file|extensions:sb3|max:10240',
         ]);
 
-        // Logic Update File jika ada upload baru
         if ($request->hasFile('starter_file')) {
-            // Hapus file lama jika ada
             if ($task->starter_project_path) {
                 Storage::disk('public')->delete($task->starter_project_path);
             }
-            // Upload file baru
-            $task->starter_project_path = $request->file('starter_file')->store('starters', 'public');
+            $task->starter_project_path = $request->file('starter_file')->store('starter_projects', 'public');
         }
 
         $task->update([
             'title' => $request->title,
             'instruction' => $request->instruction,
-            // starter_project_path diupdate manual di atas
+            'deadline' => $request->deadline, // Update deadline
         ]);
 
         return redirect()->route('modules.show', $task->module_id)->with('success', 'Tugas berhasil diperbarui!');
     }
-
     /**
      * Remove the specified resource from storage.
      */

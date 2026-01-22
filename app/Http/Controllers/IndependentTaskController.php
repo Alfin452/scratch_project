@@ -28,6 +28,7 @@ class IndependentTaskController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'instruction' => 'required|string',
+            'deadline' => 'nullable|date', // Validasi
             'starter_file' => 'nullable|file|extensions:sb3|max:10240',
         ]);
 
@@ -37,9 +38,10 @@ class IndependentTaskController extends Controller
         }
 
         Task::create([
-            'module_id' => null, // PENTING: Set NULL karena ini tugas mandiri
+            'module_id' => null,
             'title' => $request->title,
             'instruction' => $request->instruction,
+            'deadline' => $request->deadline, // Simpan
             'starter_project_path' => $path,
         ]);
 
