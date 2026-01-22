@@ -19,8 +19,8 @@ if ($hour >= 5 && $hour < 11) {
                 </h2>
             </x-slot>
 
-            <div class="py-8">
-                <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-8">
+            <div class="py-2">
+                <div class="max-w-7xl mx-auto sm:px-6 lg:px-2 space-y-8">
 
                     <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-indigo-600 to-violet-600 dark:from-indigo-900 dark:to-violet-900 shadow-xl">
                         <div class="absolute top-0 right-0 -mt-10 -mr-10 w-64 h-64 rounded-full bg-white/10 blur-3xl"></div>

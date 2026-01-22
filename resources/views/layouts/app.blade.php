@@ -11,6 +11,9 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/airbnb.css"> {{-- Tema Modern --}}
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <script>
@@ -22,6 +25,9 @@
     </script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+{{-- Bahasa Indonesia (Opsional) --}}
+<script src="https://npmcdn.com/flatpickr/dist/l10n/id.js"></script>
 
 <body class="font-sans antialiased bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100"
     x-data="{ 

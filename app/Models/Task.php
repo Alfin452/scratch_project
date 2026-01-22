@@ -11,6 +11,10 @@ class Task extends Model
 
     protected $guarded = ['id'];
 
+    protected $casts = [
+        'deadline' => 'datetime',
+    ];
+
     // --- RELATIONS ---
 
     // Setiap Tugas milik satu Modul

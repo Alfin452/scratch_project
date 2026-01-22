@@ -61,6 +61,21 @@
                         </div>
 
                         <div>
+                            <label for="deadline" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Batas Waktu (Deadline) - Opsional</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                    <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
+                                    </svg>
+                                </div>
+                                <input type="text" name="deadline" id="deadline"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                                    placeholder="Pilih tanggal dan jam...">
+                            </div>
+                            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Kosongkan jika tidak ada batas waktu.</p>
+                        </div>
+
+                        <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">File Starter Project (Opsional)</label>
 
                             <div class="flex items-center justify-center w-full">
@@ -94,6 +109,18 @@
     </div>
 
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            flatpickr("#deadline", {
+                enableTime: true,
+                dateFormat: "Y-m-d H:i", // Format yang dikirim ke database
+                altInput: true, // Tampilkan format yang lebih mudah dibaca user
+                altFormat: "j F Y, H:i", // Contoh: 22 Januari 2026, 14:30
+                time_24hr: true,
+                minDate: "today", // Tidak boleh pilih tanggal kemarin
+                locale: "id" // Bahasa Indonesia
+            });
+        });
+
         function previewFile() {
             const input = document.getElementById('starter_file');
             const fileNameDisplay = document.getElementById('file-name');
