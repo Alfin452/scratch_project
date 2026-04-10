@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'guru@skripsi.com',
             'password' => Hash::make('password'), // Passwordnya: password
             'role' => 'teacher',
-            'email_verified_at' => now(),
+            'email_verified_at' => \Carbon\Carbon::now(),
         ]);
 
         // 2. Buat Akun SISWA
@@ -30,7 +30,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'siswa@skripsi.com',
             'password' => Hash::make('password'), // Passwordnya: password
             'role' => 'student',
-            'email_verified_at' => now(),
+            'email_verified_at' => \Carbon\Carbon::now(),
         ]);
 
         // 3. Buat Contoh MODUL (Materi)
@@ -51,6 +51,8 @@ class DatabaseSeeder extends Seeder
             'starter_project_path' => null, // Nanti kita isi kalau fitur upload sudah jadi
         ]);
 
-        $this->command->info('Data dummy berhasil dibuat! Login pakai email: guru@skripsi.com / password');
+        if (isset($this->command)) {
+            $this->command->info('Data dummy berhasil dibuat! Login pakai email: guru@skripsi.com / password');
+        }
     }
 }

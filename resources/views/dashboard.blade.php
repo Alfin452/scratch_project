@@ -13,16 +13,18 @@ if ($hour >= 5 && $hour < 11) {
             @endphp
 
             <x-dynamic-component :component="Auth::user()->isTeacher() ? 'app-layout' : 'student-layout'">
+
             <x-slot name="header">
                 <h2 class="font-bold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                    {{ __('Dashboard Overview') }}
+                    {{ __('Dashboard') }}
                 </h2>
             </x-slot>
 
-            <div class="py-2">
-                <div class="max-w-7xl mx-auto sm:px-6 lg:px-2 space-y-8">
+            <div class="py-6">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
 
-                    <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-indigo-600 to-violet-600 dark:from-indigo-900 dark:to-violet-900 shadow-xl">
+                    {{-- Welcome Banner (Shared) --}}
+                    <div class="gsap-hero relative overflow-hidden rounded-3xl bg-gradient-to-r from-indigo-600 to-violet-600 dark:from-indigo-900 dark:to-violet-900 shadow-xl opacity-0 translate-y-4">
                         <div class="absolute top-0 right-0 -mt-10 -mr-10 w-64 h-64 rounded-full bg-white/10 blur-3xl"></div>
                         <div class="absolute bottom-0 left-0 -mb-10 -ml-10 w-64 h-64 rounded-full bg-black/10 blur-3xl"></div>
 
@@ -52,7 +54,6 @@ if ($hour >= 5 && $hour < 11) {
                                         </svg>
                                         Periksa Tugas
                                     </span>
-                                    <div class="absolute inset-0 bg-indigo-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                                 </a>
                                 @else
                                 <a href="{{ route('modules.index') }}" class="group relative inline-flex items-center px-8 py-3.5 bg-yellow-400 text-yellow-900 font-bold rounded-full shadow-lg hover:shadow-yellow-400/50 transition-all duration-300 hover:-translate-y-1">
@@ -69,6 +70,7 @@ if ($hour >= 5 && $hour < 11) {
                         </div>
                     </div>
 
+                    {{-- TEACHER VIEW (UNCHANGED) --}}
                     @if(Auth::user()->isTeacher())
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                         <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md transition-shadow duration-300 relative overflow-hidden group">
@@ -83,12 +85,9 @@ if ($hour >= 5 && $hour < 11) {
                                     </svg>
                                 </div>
                             </div>
-                            <div class="mt-4 text-xs font-medium text-green-500 flex items-center">
-                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div class="mt-4 text-xs font-medium text-green-500 flex items-center"><svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
-                                </svg>
-                                Aktif Belajar
-                            </div>
+                                </svg> Aktif Belajar</div>
                         </div>
 
                         <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md transition-shadow duration-300 group">
@@ -159,7 +158,6 @@ if ($hour >= 5 && $hour < 11) {
                                 </svg>
                             </a>
                         </div>
-
                         <div class="overflow-x-auto">
                             <table class="w-full">
                                 <thead class="bg-gray-50 dark:bg-gray-700/50">
@@ -224,125 +222,152 @@ if ($hour >= 5 && $hour < 11) {
                     </div>
                     @endif
 
+                    {{-- STUDENT VIEW (REDESIGNED) --}}
                     @if(!Auth::user()->isTeacher())
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
-                        <div class="space-y-8">
-                            <div class="relative bg-gray-900 rounded-3xl p-6 text-white shadow-2xl overflow-hidden border border-gray-800">
-                                <div class="absolute top-0 right-0 w-48 h-48 bg-purple-500/20 rounded-full blur-3xl -mr-16 -mt-16"></div>
-                                <div class="absolute bottom-0 left-0 w-32 h-32 bg-indigo-500/20 rounded-full blur-2xl -ml-10 -mb-10"></div>
+                        {{-- Sidebar (Stats & Guide) --}}
+                        <div class="lg:col-span-4 space-y-6">
+
+                            {{-- Stats Card --}}
+                            <div class="gsap-sidebar-card opacity-0 translate-y-4 relative bg-gray-900 dark:bg-gray-800 rounded-3xl p-6 text-white shadow-2xl overflow-hidden border border-gray-800">
+                                <div class="absolute top-0 right-0 w-40 h-40 bg-indigo-500/20 rounded-full blur-3xl -mr-10 -mt-10"></div>
+                                <div class="absolute bottom-0 left-0 w-32 h-32 bg-violet-500/20 rounded-full blur-2xl -ml-10 -mb-10"></div>
 
                                 <div class="relative z-10">
                                     <div class="flex justify-between items-start mb-6">
                                         <div>
-                                            <p class="text-gray-400 text-xs font-bold uppercase tracking-widest">Player Stats</p>
+                                            <p class="text-indigo-300 text-xs font-bold uppercase tracking-widest">Player Stats</p>
                                             <h3 class="text-lg font-bold">Total Experience</h3>
                                         </div>
-                                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center shadow-lg shadow-orange-500/20">
-                                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center shadow-lg shadow-orange-500/20 transform hover:scale-110 transition-transform">
+                                            <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                                             </svg>
                                         </div>
                                     </div>
 
-                                    <div class="mb-6">
-                                        <span class="text-5xl font-extrabold tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400">{{ number_format($totalScore) }}</span>
-                                        <span class="text-sm font-bold text-gray-500 ml-1">XP</span>
+                                    <div class="mb-8">
+                                        <div class="flex items-baseline">
+                                            <span class="text-5xl font-extrabold tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-300">{{ number_format($totalScore) }}</span>
+                                            <span class="text-sm font-bold text-gray-400 ml-2">XP</span>
+                                        </div>
                                     </div>
 
-                                    <div class="space-y-2">
+                                    <div class="space-y-3">
                                         <div class="flex justify-between text-xs font-bold text-gray-400">
                                             <span>Progress Level</span>
                                             <span>{{ $progress }}%</span>
                                         </div>
-                                        <div class="w-full bg-gray-800 rounded-full h-2.5 overflow-hidden border border-gray-700">
-                                            <div class="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 h-2.5 rounded-full transition-all duration-1000" style="width: {{ $progress }}%"></div>
+                                        <div class="w-full bg-gray-800/50 rounded-full h-3 overflow-hidden border border-gray-700/50">
+                                            <div class="gsap-progress-bar bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 h-3 rounded-full" style="width: 0%" data-width="{{ $progress }}%"></div>
                                         </div>
-                                        <p class="text-right text-[10px] text-gray-500 mt-1">{{ $completedTasks }} / {{ $totalTasksAvailable }} Misi Selesai</p>
+                                        <p class="text-right text-[11px] text-gray-500 mt-1">{{ $completedTasks }} / {{ $totalTasksAvailable }} Misi Selesai</p>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
-                                <h4 class="font-bold text-gray-800 dark:text-white mb-5 flex items-center">
-                                    <span class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center mr-3">
+                            {{-- Learning Guide --}}
+                            <div class="gsap-sidebar-card opacity-0 translate-y-4 bg-white dark:bg-gray-800 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+                                <h4 class="font-bold text-gray-800 dark:text-white mb-6 flex items-center text-lg">
+                                    <span class="w-8 h-8 rounded-lg bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mr-3">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
                                         </svg>
                                     </span>
                                     Cara Belajar
                                 </h4>
-                                <div class="space-y-6 relative before:absolute before:inset-y-0 before:left-4 before:w-0.5 before:bg-gray-100 dark:before:bg-gray-700">
-                                    <div class="relative pl-10">
-                                        <div class="absolute left-0 top-1 w-8 h-8 rounded-full border-2 border-white dark:border-gray-800 bg-blue-500 text-white flex items-center justify-center font-bold text-xs shadow-sm z-10">1</div>
-                                        <p class="text-sm font-bold text-gray-800 dark:text-gray-200">Pelajari Materi</p>
-                                        <p class="text-xs text-gray-500 leading-relaxed mt-1">Baca modul yang tersedia di setiap bab untuk memahami konsep.</p>
+                                <div class="space-y-8 relative before:absolute before:inset-y-2 before:left-[17px] before:w-0.5 before:bg-indigo-50 dark:before:bg-gray-700">
+                                    <div class="relative pl-12 group">
+                                        <div class="absolute left-0 top-1 w-9 h-9 rounded-xl border-2 border-white dark:border-gray-800 bg-indigo-500 text-white flex items-center justify-center font-bold text-sm shadow-md group-hover:scale-110 transition-transform z-10">1</div>
+                                        <p class="text-base font-bold text-gray-800 dark:text-gray-200">Pelajari Materi</p>
+                                        <p class="text-sm text-gray-500 leading-relaxed mt-1">Buka modul di sebelah kanan, baca dan pahami konsep dasar pemrograman.</p>
                                     </div>
-                                    <div class="relative pl-10">
-                                        <div class="absolute left-0 top-1 w-8 h-8 rounded-full border-2 border-white dark:border-gray-800 bg-purple-500 text-white flex items-center justify-center font-bold text-xs shadow-sm z-10">2</div>
-                                        <p class="text-sm font-bold text-gray-800 dark:text-gray-200">Kerjakan Tantangan</p>
-                                        <p class="text-xs text-gray-500 leading-relaxed mt-1">Unduh file latihan dan selesaikan tantangan kodingnya.</p>
+                                    <div class="relative pl-12 group">
+                                        <div class="absolute left-0 top-1 w-9 h-9 rounded-xl border-2 border-white dark:border-gray-800 bg-violet-500 text-white flex items-center justify-center font-bold text-sm shadow-md group-hover:scale-110 transition-transform z-10">2</div>
+                                        <p class="text-base font-bold text-gray-800 dark:text-gray-200">Kerjakan Tantangan</p>
+                                        <p class="text-sm text-gray-500 leading-relaxed mt-1">Unduh file latihan (.sb3) dan selesaikan tantangan koding di Scratch.</p>
                                     </div>
-                                    <div class="relative pl-10">
-                                        <div class="absolute left-0 top-1 w-8 h-8 rounded-full border-2 border-white dark:border-gray-800 bg-green-500 text-white flex items-center justify-center font-bold text-xs shadow-sm z-10">3</div>
-                                        <p class="text-sm font-bold text-gray-800 dark:text-gray-200">Dapatkan Nilai</p>
-                                        <p class="text-xs text-gray-500 leading-relaxed mt-1">Upload hasil kerjamu (.sb3) dan tunggu review guru.</p>
+                                    <div class="relative pl-12 group">
+                                        <div class="absolute left-0 top-1 w-9 h-9 rounded-xl border-2 border-white dark:border-gray-800 bg-pink-500 text-white flex items-center justify-center font-bold text-sm shadow-md group-hover:scale-110 transition-transform z-10">3</div>
+                                        <p class="text-base font-bold text-gray-800 dark:text-gray-200">Dapatkan Nilai</p>
+                                        <p class="text-sm text-gray-500 leading-relaxed mt-1">Upload hasil kerjamu. Guru akan mereview dan memberikan XP!</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="lg:col-span-2">
+                        {{-- Main Content (Learning Path) --}}
+                        <div class="lg:col-span-8">
                             <div class="flex items-center justify-between mb-6">
-                                <h3 class="font-bold text-xl text-gray-800 dark:text-white">Jalur Pembelajaran</h3>
-                                <span class="text-xs font-bold text-gray-500 bg-gray-100 dark:bg-gray-700 px-3 py-1.5 rounded-full">{{ $modules->count() }} Modul Tersedia</span>
+                                <div>
+                                    <h3 class="font-bold text-xl text-gray-800 dark:text-white">Jalur Pembelajaran</h3>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Selesaikan modul secara berurutan</p>
+                                </div>
+                                <span class="text-xs font-bold text-indigo-600 bg-indigo-50 dark:bg-indigo-900/50 dark:text-indigo-300 px-3 py-1.5 rounded-full border border-indigo-100 dark:border-indigo-800">
+                                    {{ $modules->count() }} Modul Tersedia
+                                </span>
                             </div>
 
                             <div class="space-y-4">
                                 @foreach($modules as $mod)
-                                <div class="group bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 hover:border-indigo-300 dark:hover:border-indigo-700 hover:shadow-lg hover:shadow-indigo-500/10 transition-all duration-300">
-                                    <div class="flex flex-col sm:flex-row gap-5">
+                                <div class="gsap-module-card opacity-0 translate-y-4 group bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 hover:border-indigo-300 dark:hover:border-indigo-500 hover:shadow-lg hover:shadow-indigo-500/10 transition-all duration-300 relative overflow-hidden">
+
+                                    {{-- Hover Effect Decoration --}}
+                                    <div class="absolute top-0 right-0 w-32 h-32 bg-indigo-50 dark:bg-indigo-900/20 rounded-full blur-3xl -mr-16 -mt-16 transition-opacity opacity-0 group-hover:opacity-100"></div>
+
+                                    <div class="flex flex-col sm:flex-row gap-6 relative z-10">
                                         <div class="shrink-0">
-                                            <div class="w-16 h-16 rounded-2xl bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 flex flex-col items-center justify-center font-bold border border-indigo-100 dark:border-indigo-800 group-hover:bg-indigo-600 group-hover:text-white transition-colors duration-300">
-                                                <span class="text-[10px] uppercase tracking-wide opacity-70">BAB</span>
-                                                <span class="text-2xl">{{ $mod->order }}</span>
+                                            <div class="w-20 h-20 rounded-2xl bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 flex flex-col items-center justify-center font-bold border border-indigo-100 dark:border-indigo-800 group-hover:bg-indigo-600 group-hover:text-white transition-colors duration-300">
+                                                <span class="text-[10px] uppercase tracking-wide opacity-70 mb-1">BAB</span>
+                                                <span class="text-3xl">{{ $mod->order }}</span>
                                             </div>
                                         </div>
 
-                                        <div class="flex-1 min-w-0">
+                                        <div class="flex-1 min-w-0 flex flex-col justify-center">
                                             <div class="flex items-center justify-between mb-2">
-                                                <h4 class="text-lg font-bold text-gray-900 dark:text-white truncate pr-4 group-hover:text-indigo-600 transition-colors">{{ $mod->title }}</h4>
+                                                <h4 class="text-lg font-bold text-gray-900 dark:text-white truncate pr-4 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                                                    {{ $mod->title }}
+                                                </h4>
+                                                <a href="{{ route('modules.show', $mod->id) }}" class="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-400 flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white transition-all duration-300 transform group-hover:translate-x-1">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                                    </svg>
+                                                </a>
                                             </div>
-                                            <p class="text-sm text-gray-500 dark:text-gray-400 line-clamp-2 mb-4">{{ $mod->description }}</p>
+                                            <p class="text-sm text-gray-500 dark:text-gray-400 line-clamp-2 mb-4 pr-8">{{ $mod->description }}</p>
 
-                                            @if($mod->tasks->count() > 0)
-                                            <div class="flex flex-wrap gap-2">
+                                            <div class="flex items-center gap-2 flex-wrap">
+                                                @if($mod->tasks->count() > 0)
                                                 @foreach($mod->tasks as $t)
                                                 @php
                                                 $sub = $t->submissions->first();
-                                                $badgeClass = $sub
-                                                ? ($sub->status == 'graded'
-                                                ? 'bg-green-50 text-green-700 border-green-200'
-                                                : 'bg-yellow-50 text-yellow-700 border-yellow-200')
-                                                : 'bg-gray-50 text-gray-500 border-gray-200';
-                                                $icon = $sub ? ($sub->status == 'graded' ? '★' : '•') : '○';
+                                                $status = $sub ? $sub->status : 'none';
+
+                                                $classes = 'bg-gray-50 text-gray-400 border-gray-200 dark:bg-gray-700/50 dark:border-gray-600 dark:text-gray-500';
+                                                $icon = '○';
+
+                                                if ($status == 'graded') {
+                                                $classes = 'bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800';
+                                                $icon = '★';
+                                                } elseif ($status == 'submitted') {
+                                                $classes = 'bg-yellow-50 text-yellow-700 border-yellow-200 dark:bg-yellow-900/20 dark:text-yellow-400 dark:border-yellow-800';
+                                                $icon = '•';
+                                                }
                                                 @endphp
-                                                <div class="text-[10px] font-bold px-2.5 py-1 rounded-md border {{ $badgeClass }} flex items-center transition-colors">
-                                                    <span class="mr-1.5 text-xs">{{ $icon }}</span> Latihan {{ $loop->iteration }}
+                                                <div class="text-[10px] font-bold px-2.5 py-1 rounded-md border {{ $classes }} flex items-center transition-colors" title="Latihan {{ $loop->iteration }}">
+                                                    <span class="mr-1.5">{{ $icon }}</span> Latihan {{ $loop->iteration }}
                                                 </div>
                                                 @endforeach
+                                                @else
+                                                <div class="text-xs text-gray-400 italic flex items-center">
+                                                    <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                    </svg>
+                                                    Materi Bacaan
+                                                </div>
+                                                @endif
                                             </div>
-                                            @else
-                                            <div class="text-xs text-gray-400 italic">Belum ada latihan.</div>
-                                            @endif
-                                        </div>
-
-                                        <div class="shrink-0 flex items-center">
-                                            <a href="{{ route('modules.show', $mod->id) }}" class="w-10 h-10 rounded-full bg-gray-50 dark:bg-gray-700 text-gray-400 flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white transition-all duration-300 transform group-hover:translate-x-1">
-                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                                                </svg>
-                                            </a>
                                         </div>
                                     </div>
                                 </div>
@@ -354,4 +379,53 @@ if ($hour >= 5 && $hour < 11) {
 
                 </div>
             </div>
+
+            {{-- Script Loaded Directly --}}
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+            <script>
+                document.addEventListener("DOMContentLoaded", (event) => {
+                    gsap.registerPlugin(ScrollTrigger);
+
+                    // 1. Hero Entrance
+                    gsap.to(".gsap-hero", {
+                        opacity: 1,
+                        y: 0,
+                        duration: 1,
+                        ease: "power3.out"
+                    });
+
+                    // 2. Sidebar Cards (Stats & Guide)
+                    gsap.to(".gsap-sidebar-card", {
+                        opacity: 1,
+                        y: 0,
+                        duration: 0.8,
+                        stagger: 0.2,
+                        delay: 0.3,
+                        ease: "back.out(1.7)"
+                    });
+
+                    // 3. Module Cards (Staggered List)
+                    gsap.to(".gsap-module-card", {
+                        opacity: 1,
+                        y: 0,
+                        duration: 0.8,
+                        stagger: 0.1,
+                        delay: 0.5,
+                        ease: "power3.out"
+                    });
+
+                    // 4. Progress Bar Fill Animation
+                    const progressBar = document.querySelector(".gsap-progress-bar");
+                    if (progressBar) {
+                        const targetWidth = progressBar.getAttribute("data-width");
+                        gsap.to(progressBar, {
+                            width: targetWidth,
+                            duration: 1.5,
+                            delay: 1,
+                            ease: "power2.out"
+                        });
+                    }
+                });
+            </script>
             </x-dynamic-component>

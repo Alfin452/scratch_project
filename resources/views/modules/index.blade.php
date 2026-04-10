@@ -150,7 +150,8 @@
     {{-- ========================================== --}}
     @else
 
-    <div class="relative bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-900 dark:to-purple-900 overflow-hidden">
+    {{-- GSAP Banner --}}
+    <div class="gsap-banner opacity-0 -translate-y-10 relative bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-900 dark:to-purple-900 overflow-hidden">
         <div class="absolute inset-0">
             <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4xKSIvPjwvc3ZnPg==')] opacity-20"></div>
         </div>
@@ -168,7 +169,8 @@
         @if($modules->count() > 0)
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             @foreach ($modules as $module)
-            <div class="group bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden hover:shadow-2xl hover:border-indigo-300 dark:hover:border-indigo-700 transition-all duration-300 transform hover:-translate-y-2 flex flex-col h-full">
+            {{-- GSAP Card --}}
+            <div class="gsap-card opacity-0 translate-y-10 group bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden hover:shadow-2xl hover:border-indigo-300 dark:hover:border-indigo-700 transition-all duration-300 transform hover:-translate-y-2 flex flex-col h-full">
 
                 <div class="p-6 pb-0">
                     <div class="flex justify-between items-start mb-4">
@@ -196,18 +198,6 @@
                 <div class="flex-1"></div>
 
                 <div class="p-6 pt-0 mt-4">
-                    {{--
-                    @if($module->tasks->count() > 0)
-                    <div class="flex justify-between text-xs font-semibold text-gray-400 mb-1">
-                        <span>Progress</span>
-                        <span>0%</span>
-                    </div>
-                    <div class="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-2 mb-6 overflow-hidden">
-                        <div class="bg-indigo-500 h-2 rounded-full" style="width: 0%"></div>
-                    </div>
-                    @endif 
-                    --}}
-
                     <a href="{{ route('modules.show', $module->id) }}" class="block w-full text-center px-4 py-3 bg-gray-50 dark:bg-gray-700 hover:bg-indigo-600 text-gray-700 dark:text-gray-300 hover:text-white font-bold rounded-xl transition-all duration-300 border border-gray-200 dark:border-gray-600 hover:border-indigo-600">
                         Buka Materi
                     </a>
@@ -216,7 +206,7 @@
             @endforeach
         </div>
         @else
-        <div class="text-center py-20 bg-white dark:bg-gray-800 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700">
+        <div class="gsap-empty text-center py-20 bg-white dark:bg-gray-800 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700">
             <div class="inline-flex items-center justify-center w-24 h-24 bg-gray-100 dark:bg-gray-700 rounded-full mb-6">
                 <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
@@ -227,6 +217,39 @@
         </div>
         @endif
     </div>
+
+    {{-- GSAP Script loaded directly for student view --}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", (event) => {
+            // Hero Banner Entrance
+            gsap.to(".gsap-banner", {
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                ease: "power3.out"
+            });
+
+            // Modules Stagger
+            gsap.to(".gsap-card", {
+                opacity: 1,
+                y: 0,
+                duration: 0.8,
+                stagger: 0.15,
+                delay: 0.3,
+                ease: "back.out(1.2)"
+            });
+
+            // Empty State
+            gsap.to(".gsap-empty", {
+                opacity: 1,
+                y: 0,
+                duration: 0.8,
+                ease: "power3.out"
+            });
+        });
+    </script>
+
     @endif
 
 </x-dynamic-component>
