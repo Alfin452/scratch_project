@@ -211,26 +211,40 @@
                             </div>
 
                             <div class="w-full md:w-auto">
-                                @if($next)
-                                <a href="{{ route('modules.show', $next->id) }}" class="group flex items-center justify-end p-3 rounded-xl hover:bg-white dark:hover:bg-gray-800 hover:shadow-md transition-all duration-300 border border-transparent hover:border-gray-100 dark:hover:border-gray-700">
-                                    <div class="text-right">
-                                        <div class="text-xs text-gray-400 uppercase font-bold">Selanjutnya</div>
-                                        <div class="font-semibold text-gray-700 dark:text-gray-200 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{{ Str::limit($next->title, 20) }}</div>
-                                    </div>
-                                    <div class="w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 flex items-center justify-center ml-3 group-hover:scale-110 transition-transform">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                {{-- KONTEN ASLI (Tersembunyi sampai timer selesai) --}}
+                                <div id="next-action-unlocked" class="hidden">
+                                    @if($next)
+                                    <a href="{{ route('modules.show', $next->id) }}" class="group flex items-center justify-end p-3 rounded-xl hover:bg-white dark:hover:bg-gray-800 hover:shadow-md transition-all duration-300 border border-transparent hover:border-gray-100 dark:hover:border-gray-700">
+                                        <div class="text-right">
+                                            <div class="text-xs text-gray-400 uppercase font-bold">Selanjutnya</div>
+                                            <div class="font-semibold text-gray-700 dark:text-gray-200 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{{ Str::limit($next->title, 20) }}</div>
+                                        </div>
+                                        <div class="w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 flex items-center justify-center ml-3 group-hover:scale-110 transition-transform">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                            </svg>
+                                        </div>
+                                    </a>
+                                    @else
+                                    <a href="{{ route('modules.index') }}" class="inline-flex items-center px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg hover:shadow-indigo-500/30 transition-all transform hover:-translate-y-1">
+                                        Selesai Belajar
+                                        <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                                         </svg>
-                                    </div>
-                                </a>
-                                @else
-                                <a href="{{ route('modules.index') }}" class="inline-flex items-center px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg hover:shadow-indigo-500/30 transition-all transform hover:-translate-y-1">
-                                    Selesai Belajar
-                                    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                    </svg>
-                                </a>
-                                @endif
+                                    </a>
+                                    @endif
+                                </div>
+
+                                {{-- TOMBOL TERKUNCI --}}
+                                <div id="next-action-locked" class="flex">
+                                    <button disabled class="inline-flex items-center px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 font-bold rounded-xl cursor-not-allowed transition-all">
+                                        <svg class="w-5 h-5 mr-2 animate-spin text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                        </svg>
+                                        <span id="reading-timer-text">Membaca... (00:00)</span>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -301,7 +315,13 @@
         </div>
     </div>
 
-    {{-- Script GSAP untuk Siswa --}}
+    {{-- Script GSAP untuk Siswa & Reading Timer --}}
+    @php
+        $wordCount = str_word_count(strip_tags($module->content));
+        // Hitung target detik: 150 kata per menit. Minimal 60 detik mutlak.
+        $readingTimeSeconds = max(60, ceil(($wordCount / 150) * 60));
+    @endphp
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
     <script>
@@ -309,60 +329,127 @@
             gsap.registerPlugin(ScrollTrigger);
 
             // 1. Breadcrumb Fade Down
-            gsap.to(".gsap-fade-down", {
-                opacity: 1,
-                y: 0,
-                duration: 0.8,
-                ease: "power3.out"
-            });
+            gsap.to(".gsap-fade-down", { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" });
 
             // 2. Sidebar Slide In
-            gsap.to(".gsap-sidebar", {
-                opacity: 1,
-                x: 0,
-                duration: 0.8,
-                delay: 0.2,
-                ease: "power3.out"
-            });
+            gsap.to(".gsap-sidebar", { opacity: 1, x: 0, duration: 0.8, delay: 0.2, ease: "power3.out" });
 
             // 3. Main Content Fade Up
-            gsap.to(".gsap-content", {
-                opacity: 1,
-                y: 0,
-                duration: 0.8,
-                delay: 0.4,
-                ease: "power3.out"
-            });
+            gsap.to(".gsap-content", { opacity: 1, y: 0, duration: 0.8, delay: 0.4, ease: "power3.out" });
 
             // 4. Task Section & Cards
             const taskSection = document.querySelector(".gsap-task-section");
             if (taskSection) {
-                gsap.to(taskSection, {
-                    scrollTrigger: {
-                        trigger: taskSection,
-                        start: "top 85%"
-                    },
-                    opacity: 1,
-                    y: 0,
-                    duration: 0.8,
-                    ease: "power3.out"
-                });
+                gsap.to(taskSection, { scrollTrigger: { trigger: taskSection, start: "top 85%" }, opacity: 1, y: 0, duration: 0.8, ease: "power3.out" });
+                gsap.to(".gsap-task-card", { scrollTrigger: { trigger: taskSection, start: "top 80%" }, opacity: 1, y: 0, stagger: 0.1, duration: 0.6, ease: "back.out(1.5)" });
+            }
 
-                gsap.to(".gsap-task-card", {
-                    scrollTrigger: {
-                        trigger: taskSection,
-                        start: "top 80%"
-                    },
-                    opacity: 1,
-                    y: 0,
-                    stagger: 0.1,
-                    duration: 0.6,
-                    ease: "back.out(1.5)"
-                });
+            // ==========================================
+            // READING TIMER LOGIC
+            // ==========================================
+            const moduleId = {{ $module->id }};
+            const targetSeconds = parseInt('{{ $readingTimeSeconds }}');
+            const storageKey = `read_timer_module_${moduleId}`;
+            
+            // Ambil sisa waktu dari local storage. Jika tidak ada, gunakan target waktu asli.
+            let savedTime = localStorage.getItem(storageKey);
+            let timeRemaining = savedTime !== null ? parseInt(savedTime) : targetSeconds;
+
+            const lockedEl = document.getElementById('next-action-locked');
+            const unlockedEl = document.getElementById('next-action-unlocked');
+            const timerText = document.getElementById('reading-timer-text');
+
+            function updateTimerDisplay() {
+                if(timeRemaining <= 0) {
+                    // Waktu habis, tampilkan tombol asli
+                    lockedEl.classList.add('hidden');
+                    lockedEl.classList.remove('flex');
+                    unlockedEl.classList.remove('hidden');
+                    
+                    // Supaya ada sedikit efek saat memunculkan
+                    gsap.fromTo(unlockedEl, {opacity: 0, x: -10}, {opacity: 1, x: 0, duration: 0.5});
+                    return;
+                }
+
+                // Format menit dan detik
+                const minutes = Math.floor(timeRemaining / 60);
+                const seconds = timeRemaining % 60;
+                timerText.textContent = `Membaca... (${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')})`;
+            }
+
+            // Jalankan perdana
+            updateTimerDisplay();
+
+            if(timeRemaining > 0) {
+                const interval = setInterval(() => {
+                    timeRemaining--;
+                    localStorage.setItem(storageKey, timeRemaining);
+                    updateTimerDisplay();
+
+                    if(timeRemaining <= 0) {
+                        clearInterval(interval);
+                    }
+                }, 1000);
             }
         });
     </script>
 
     @endif
 
+    <style>
+        /* Fix for CKEditor image wrapper in Tailwind Prose */
+        .prose figure.image {
+            display: block;
+            margin-bottom: 1.5rem;
+            margin-top: 1.5rem;
+            max-width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .prose figure.image img {
+            width: 100%; /* Mengikuti lebar dari figure container yang diresize */
+            height: auto;
+            margin: 0 auto;
+            display: block;
+        }
+        .prose figure.image figcaption {
+            display: block;
+            text-align: center !important;
+            color: #6b7280;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            font-style: italic;
+        }
+
+        /* Pastikan format image style bawaan resize CKEditor bekerja */
+        .prose figure.image.image-style-align-left { margin-left: 0; margin-right: auto; }
+        .prose figure.image.image-style-align-right { margin-left: auto; margin-right: 0; }
+        .prose figure.image.image-style-align-center { margin-left: auto; margin-right: auto; }
+        
+        /* Fix alignment classes output by CKEditor */
+        .prose .text-align-left { text-align: left !important; }
+        .prose .text-align-center { text-align: center !important; }
+        .prose .text-align-right { text-align: right !important; }
+        .prose .text-align-justify { text-align: justify !important; }
+        
+        /* Dukungan highlight dan warna font */
+        .prose mark.marker-yellow { background-color: var(--ck-highlight-marker-yellow); }
+        .prose mark.marker-green { background-color: var(--ck-highlight-marker-green); }
+        .prose mark.marker-pink { background-color: var(--ck-highlight-marker-pink); }
+        .prose mark.marker-blue { background-color: var(--ck-highlight-marker-blue); }
+        .prose span.pen-red { color: var(--ck-highlight-pen-red); background-color: transparent; }
+        .prose span.pen-green { color: var(--ck-highlight-pen-green); background-color: transparent; }
+
+        /* Dukungan Ukuran Font Bawaan CKEditor (text-tiny, text-huge, dsb) */
+        .prose .text-tiny { font-size: 0.7em !important; }
+        .prose .text-small { font-size: 0.85em !important; }
+        .prose .text-big { font-size: 1.5em !important; }
+        .prose .text-huge { font-size: 2em !important; }
+
+        /* Dukungan Spasi Paragraf CKEditor (Menggunakan Style Plugin) */
+        .prose .spasi-normal { line-height: normal !important; }
+        .prose .spasi-1-15 { line-height: 1.15 !important; }
+        .prose .spasi-1-5 { line-height: 1.5 !important; }
+        .prose .spasi-2 { line-height: 2 !important; }
+    </style>
 </x-dynamic-component>

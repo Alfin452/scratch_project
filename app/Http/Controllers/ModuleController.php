@@ -170,4 +170,31 @@ class ModuleController extends Controller
         return view('modules.show', compact('module', 'allModules', 'previous', 'next'));
     }
 
+    /**
+     * Handle image upload from CKEditor.
+     */
+    public function uploadImage(Request $request)
+    {
+        /** @var User $user */
+        $user = Auth::user();
+
+        if (!$user->isTeacher()) {
+            return response()->json(['error' => ['message' => 'Unauthorized']], 403);
+        }
+
+        if ($request->hasFile('upload')) {
+            $file = $request->file('upload');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            // Simpan gambar di folder public/storage/modules
+            $path = $file->storeAs('modules', $filename, 'public');
+
+            $url = asset('storage/' . $path);
+
+            return response()->json([
+                'url' => $url
+            ]);
+        }
+
+        return response()->json(['error' => ['message' => 'No file uploaded']], 400);
+    }
 }
