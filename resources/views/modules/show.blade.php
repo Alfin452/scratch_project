@@ -262,7 +262,7 @@
                                 <svg class="w-7 h-7 text-yellow-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                                 </svg>
-                                Tantangan Koding Tersedia!
+                                Tantangan Tersedia!
                             </h3>
                             <p class="text-indigo-100 mb-8 max-w-2xl">
                                 Uji pemahamanmu dengan menyelesaikan {{ $module->tasks->count() }} misi di bawah ini. Selesaikan untuk mendapatkan XP tambahan!

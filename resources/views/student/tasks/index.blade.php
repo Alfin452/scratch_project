@@ -64,9 +64,16 @@
 
                 {{-- Header Kartu --}}
                 <div class="flex justify-between items-start mb-4 relative z-10">
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold uppercase tracking-wider bg-indigo-50 text-indigo-600 dark:bg-indigo-900/50 dark:text-indigo-300">
-                        Bab {{ $task->module->order ?? '?' }}
-                    </span>
+                    <div class="flex items-center gap-1.5 flex-wrap">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold uppercase tracking-wider bg-indigo-50 text-indigo-600 dark:bg-indigo-900/50 dark:text-indigo-300">
+                            Bab {{ $task->module->order ?? '?' }}
+                        </span>
+                        @if($task->type === 'drag_and_drop')
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-bold bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">
+                            🔀 Drag & Drop
+                        </span>
+                        @endif
+                    </div>
                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold {{ $badgeClass }}">
                         {!! $icon !!} {{ $statusText }}
                     </span>
@@ -90,7 +97,9 @@
                         </div>
                         @else
                         <div class="flex items-center text-xs text-gray-400 dark:text-gray-500">
-                            @if($task->starter_project_path)
+                            @if($task->type === 'drag_and_drop')
+                            <span class="mr-1">🔀</span> Susun Algoritma
+                            @elseif($task->starter_project_path)
                             <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
                             </svg>

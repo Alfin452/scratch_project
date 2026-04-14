@@ -13,6 +13,7 @@ class Task extends Model
 
     protected $casts = [
         'deadline' => 'datetime',
+        'content'  => 'array',
     ];
 
     // --- RELATIONS ---

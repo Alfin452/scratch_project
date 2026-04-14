@@ -1,152 +1,212 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-bold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Penilaian Tugas: ') }} {{ $task->title }}
-        </h2>
-    </x-slot>
+    <x-slot name="header">Penilaian Tugas</x-slot>
+    <x-slot name="subHeader">{{ $task->title }}</x-slot>
 
-    <div class="py-2">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-2">
+    <div class="max-w-7xl mx-auto">
 
-            <div class="mb-4">
-                {{-- PERBAIKAN: Cek apakah ada module_id --}}
-                @if($task->module_id)
-                <a href="{{ route('modules.show', $task->module_id) }}" class="text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 font-medium flex items-center gap-1">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                    </svg>
-                    Kembali ke Modul
-                </a>
-                @else
-                {{-- Jika Tugas Mandiri, kembali ke Gradebook / Bank Soal --}}
-                <a href="{{ route('submissions.gradebook') }}" class="text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 font-medium flex items-center gap-1">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                    </svg>
-                    Kembali ke Rekapitulasi
-                </a>
-                @endif
+        {{-- Back Button + Task Badge --}}
+        <div class="flex items-center gap-4 mb-6">
+            @if($task->module_id)
+            <a href="{{ route('modules.show', $task->module_id) }}" class="flex items-center gap-1.5 text-sm font-semibold text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                Kembali ke Modul
+            </a>
+            @else
+            <a href="{{ route('submissions.gradebook') }}" class="flex items-center gap-1.5 text-sm font-semibold text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                Kembali ke Rekapitulasi
+            </a>
+            @endif
+
+            <span class="ml-auto inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold
+                {{ $task->type === 'drag_and_drop' ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400' : 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400' }}">
+                {{ $task->type === 'drag_and_drop' ? '🔀 Drag & Drop' : '💻 Scratch' }}
+            </span>
+        </div>
+
+        {{-- Stats --}}
+        <div class="grid grid-cols-3 gap-4 mb-6">
+            <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-5 shadow-sm">
+                <p class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">Total Submission</p>
+                <p class="text-3xl font-extrabold text-gray-800 dark:text-white">{{ $submissions->count() }}</p>
             </div>
+            <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-5 shadow-sm">
+                <p class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">Sudah Dinilai</p>
+                <p class="text-3xl font-extrabold text-emerald-600 dark:text-emerald-400">{{ $submissions->where('status', 'graded')->count() }}</p>
+            </div>
+            <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-5 shadow-sm">
+                <p class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">Menunggu Nilai</p>
+                <p class="text-3xl font-extrabold text-amber-500 dark:text-amber-400">{{ $submissions->where('status', 'submitted')->count() }}</p>
+            </div>
+        </div>
 
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-2xl border border-gray-100 dark:border-gray-700">
-                <div class="p-6">
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-300">
-                                <tr>
-                                    <th class="px-6 py-4">Nama Siswa</th>
-                                    <th class="px-6 py-4">Waktu Pengumpulan</th>
-                                    <th class="px-6 py-4">File Project</th>
-                                    <th class="px-6 py-4">Status & Nilai</th>
-                                    <th class="px-6 py-4 text-center">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
-                                @forelse ($submissions as $sub)
-                                <tr class="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700">
-                                    <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">
-                                        <div class="flex items-center gap-3">
-                                            <div class="w-8 h-8 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold">
-                                                {{ substr($sub->user->name, 0, 1) }}
-                                            </div>
-                                            {{ $sub->user->name }}
-                                        </div>
-                                    </td>
+        {{-- Table --}}
+        <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left">
+                    <thead class="text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide bg-gray-50 dark:bg-gray-700/50 border-b border-gray-200 dark:border-gray-700">
+                        <tr>
+                            <th class="px-6 py-4">Nama Siswa</th>
+                            <th class="px-6 py-4">Waktu Pengumpulan</th>
+                            <th class="px-6 py-4">
+                                {{ $task->type === 'drag_and_drop' ? 'Jawaban' : 'File Project' }}
+                            </th>
+                            <th class="px-6 py-4">Status & Nilai</th>
+                            <th class="px-6 py-4 text-center">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
+                        @forelse ($submissions as $sub)
+                        <tr class="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition">
+                            {{-- Nama Siswa --}}
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-9 h-9 rounded-full bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-400 flex items-center justify-center font-bold text-sm flex-shrink-0">
+                                        {{ substr($sub->user->name, 0, 1) }}
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold text-gray-800 dark:text-white">{{ $sub->user->name }}</p>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ $sub->user->email }}</p>
+                                    </div>
+                                </div>
+                            </td>
 
-                                    <td class="px-6 py-4">
-                                        {{ $sub->updated_at->format('d M Y, H:i') }}
-                                        <div class="text-xs text-gray-400">{{ $sub->updated_at->diffForHumans() }}</div>
-                                    </td>
+                            {{-- Waktu --}}
+                            <td class="px-6 py-4 text-gray-600 dark:text-gray-400">
+                                <p>{{ $sub->updated_at->format('d M Y') }}</p>
+                                <p class="text-xs text-gray-400">{{ $sub->updated_at->format('H:i') }} · {{ $sub->updated_at->diffForHumans() }}</p>
+                            </td>
 
-                                    <td class="px-6 py-4">
-                                        {{-- Link Download Project --}}
-                                        @if($sub->project_file_path)
-                                        <a href="{{ route('submissions.download', $sub->id) }}" class="text-indigo-600 hover:text-indigo-900 font-medium flex items-center gap-1">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
-                                            </svg>
-                                            Download .sb3
-                                        </a>
-                                        @else
-                                        <span class="text-red-500 text-xs italic">File Hilang/Rusak</span>
-                                        @endif
-                                    </td>
+                            {{-- File / Jawaban --}}
+                            <td class="px-6 py-4">
+                                @if($task->type === 'drag_and_drop')
+                                    @if($sub->answer_data && count($sub->answer_data) > 0)
+                                    <button onclick="openAnswerModal({{ $sub->id }})"
+                                        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 text-xs font-semibold hover:bg-emerald-100 dark:hover:bg-emerald-900/40 transition">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                                        Lihat Jawaban ({{ count($sub->answer_data) }} kegiatan)
+                                    </button>
 
-                                    <td class="px-6 py-4">
-                                        @if($sub->status == 'graded')
-                                        <div class="flex items-center gap-2">
-                                            <span class="px-2 py-1 text-xs font-semibold text-green-700 bg-green-100 rounded-full">Selesai</span>
-                                            <span class="font-bold text-lg text-gray-800 dark:text-white">{{ $sub->score }}</span>
-                                        </div>
-                                        @if($sub->feedback)
-                                        <p class="text-xs text-gray-500 italic mt-1 truncate max-w-xs">"{{ $sub->feedback }}"</p>
-                                        @endif
-                                        @else
-                                        <span class="px-2 py-1 text-xs font-semibold text-yellow-700 bg-yellow-100 rounded-full">Menunggu Penilaian</span>
-                                        @endif
-                                    </td>
+                                    {{-- Hidden data for modal --}}
+                                    <script id="answer-data-{{ $sub->id }}" type="application/json">@json($sub->answer_data)</script>
+                                    @else
+                                    <span class="text-xs text-gray-400 italic">Belum ada jawaban</span>
+                                    @endif
+                                @else
+                                    @if($sub->project_file_path)
+                                    <a href="{{ route('submissions.download', $sub->id) }}"
+                                        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800 text-xs font-semibold hover:bg-indigo-100 dark:hover:bg-indigo-900/40 transition">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                                        Download .sb3
+                                    </a>
+                                    @else
+                                    <span class="text-xs text-red-400 italic">File hilang</span>
+                                    @endif
+                                @endif
+                            </td>
 
-                                    <td class="px-6 py-4 text-center">
-                                        <button
-                                            onclick="openGradeModal({{ $sub->id }}, '{{ $sub->user->name }}', {{ $sub->score ?? 'null' }}, `{{ $sub->feedback ?? '' }}`)"
-                                            class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded shadow transition">
-                                            {{ $sub->status == 'graded' ? 'Edit Nilai' : 'Beri Nilai' }}
-                                        </button>
-                                    </td>
-                                </tr>
-                                @empty
-                                <tr>
-                                    <td colspan="5" class="px-6 py-12 text-center text-gray-500">
-                                        Belum ada siswa yang mengumpulkan tugas ini.
-                                    </td>
-                                </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                            {{-- Status & Nilai --}}
+                            <td class="px-6 py-4">
+                                @if($sub->status === 'graded')
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    <span class="px-2.5 py-1 text-xs font-bold rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400">✓ Dinilai</span>
+                                    <span class="text-2xl font-extrabold text-gray-800 dark:text-white">{{ $sub->score }}</span>
+                                    <span class="text-xs text-gray-400">/100</span>
+                                </div>
+                                @if($sub->feedback)
+                                <p class="text-xs text-gray-500 dark:text-gray-400 italic mt-1 line-clamp-1">"{{ $sub->feedback }}"</p>
+                                @endif
+                                @else
+                                <span class="px-2.5 py-1 text-xs font-bold rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400">⏳ Menunggu</span>
+                                @endif
+                            </td>
+
+                            {{-- Aksi --}}
+                            <td class="px-6 py-4 text-center">
+                                <button
+                                    onclick="openGradeModal({{ $sub->id }}, '{{ addslashes($sub->user->name) }}', {{ $sub->score ?? 'null' }}, `{{ addslashes($sub->feedback ?? '') }}`)"
+                                    class="px-4 py-2 rounded-lg text-xs font-bold text-white shadow-sm transition
+                                        {{ $sub->status === 'graded' ? 'bg-gray-500 hover:bg-gray-600' : 'bg-indigo-600 hover:bg-indigo-700' }}">
+                                    {{ $sub->status === 'graded' ? 'Edit Nilai' : 'Beri Nilai' }}
+                                </button>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="5" class="px-6 py-16 text-center text-gray-500 dark:text-gray-400">
+                                <div class="flex flex-col items-center gap-3">
+                                    <svg class="w-12 h-12 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2M12 12h.01M12 16h.01"/></svg>
+                                    <p class="font-semibold">Belum ada siswa yang mengumpulkan tugas ini.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
 
-    {{-- MODAL PENILAIAN --}}
-    <div id="gradeModal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" onclick="closeGradeModal()"></div>
+    {{-- ======================================================== --}}
+    {{-- MODAL: LIHAT JAWABAN DRAG & DROP --}}
+    {{-- ======================================================== --}}
+    <div id="answerModal" class="fixed inset-0 z-50 hidden overflow-y-auto" role="dialog" aria-modal="true">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm" onclick="closeAnswerModal()"></div>
+            <div class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-xl max-h-[80vh] flex flex-col overflow-hidden border border-gray-200 dark:border-gray-700">
+                <div class="flex items-center gap-3 p-5 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
+                    <div class="w-9 h-9 flex items-center justify-center bg-emerald-100 dark:bg-emerald-900/40 rounded-xl text-emerald-700 dark:text-emerald-400">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-gray-800 dark:text-white">Jawaban Siswa</h3>
+                        <p class="text-xs text-gray-500 dark:text-gray-400" id="answerModalStudent"></p>
+                    </div>
+                    <button onclick="closeAnswerModal()" class="ml-auto w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition">×</button>
+                </div>
+                <div class="overflow-y-auto p-5 space-y-4 flex-1" id="answerModalContent"></div>
+            </div>
+        </div>
+    </div>
 
-            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-
-            <div class="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg w-full">
+    {{-- ======================================================== --}}
+    {{-- MODAL: PENILAIAN --}}
+    {{-- ======================================================== --}}
+    <div id="gradeModal" class="fixed inset-0 z-50 hidden overflow-y-auto" role="dialog" aria-modal="true">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm" onclick="closeGradeModal()"></div>
+            <div class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+                <div class="flex items-center gap-3 p-5 border-b border-gray-200 dark:border-gray-700">
+                    <div class="w-9 h-9 flex items-center justify-center bg-indigo-100 dark:bg-indigo-900/40 rounded-xl text-indigo-700 dark:text-indigo-400">
+                        ✏️
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-gray-800 dark:text-white">Beri Nilai</h3>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">Siswa: <span id="studentName" class="font-semibold text-indigo-600 dark:text-indigo-400"></span></p>
+                    </div>
+                    <button onclick="closeGradeModal()" class="ml-auto w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition">×</button>
+                </div>
                 <form id="gradeForm" method="POST">
                     @csrf
                     @method('PUT')
-
-                    <div class="bg-white dark:bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                        <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white" id="modal-title">
-                            Nilai Tugas: <span id="studentName" class="font-bold text-indigo-600"></span>
-                        </h3>
-                        <div class="mt-4 space-y-4">
-                            <div>
-                                <label for="score" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Skor (0-100)</label>
-                                <input type="number" name="score" id="score" min="0" max="100" required
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                            </div>
-
-                            <div>
-                                <label for="feedback" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Feedback / Pesan untuk Siswa</label>
-                                <textarea name="feedback" id="feedback" rows="3"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                                    placeholder="Contoh: Logika loop sudah bagus, tapi perhatikan posisi blok..."></textarea>
-                            </div>
+                    <div class="p-5 space-y-4">
+                        <div>
+                            <label for="score" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Nilai (0 – 100) <span class="text-red-500">*</span></label>
+                            <input type="number" name="score" id="score" min="0" max="100" required
+                                class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-indigo-500 focus:ring-indigo-500 text-2xl font-bold shadow-sm"
+                                placeholder="Contoh: 85">
+                        </div>
+                        <div>
+                            <label for="feedback" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Pesan / Feedback untuk Siswa (Opsional)</label>
+                            <textarea name="feedback" id="feedback" rows="4"
+                                class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-indigo-500 focus:ring-indigo-500 shadow-sm text-sm"
+                                placeholder="Contoh: Urutan algoritma sudah tepat, terus semangat belajar!"></textarea>
+                            <p class="mt-1 text-xs text-gray-400">Pesan ini akan tersampaikan ke siswa di halaman aktivitasnya.</p>
                         </div>
                     </div>
-                    <div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                        <button type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm">
-                            Simpan Nilai
-                        </button>
-                        <button type="button" onclick="closeGradeModal()" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700">
-                            Batal
-                        </button>
+                    <div class="flex justify-end gap-3 px-5 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/30">
+                        <button type="button" onclick="closeGradeModal()" class="px-4 py-2.5 text-sm font-semibold text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition">Batal</button>
+                        <button type="submit" class="px-6 py-2.5 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-lg shadow-indigo-600/20 transition">Simpan Nilai</button>
                     </div>
                 </form>
             </div>
@@ -154,17 +214,56 @@
     </div>
 
     <script>
+        // === MODAL JAWABAN ===
+        function openAnswerModal(submissionId) {
+            const raw = document.getElementById('answer-data-' + submissionId);
+            if (!raw) return;
+            const data = JSON.parse(raw.textContent);
+
+            const content = document.getElementById('answerModalContent');
+            content.innerHTML = '';
+
+            data.forEach((activity, i) => {
+                const correctClass = activity.correct
+                    ? 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400'
+                    : 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800 text-red-700 dark:text-red-400';
+                const badge = activity.correct ? '✓ Benar' : '✗ Perlu Ditinjau';
+
+                let stepsHtml = (activity.answer || []).map((step, j) => `
+                    <li class="flex items-start gap-2 text-sm">
+                        <span class="flex-shrink-0 w-5 h-5 mt-0.5 flex items-center justify-center rounded-full ${activity.correct ? 'bg-emerald-200 dark:bg-emerald-800 text-emerald-700 dark:text-emerald-300' : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400'} text-xs font-bold">${j+1}</span>
+                        <span class="text-gray-700 dark:text-gray-300">${step}</span>
+                    </li>
+                `).join('');
+
+                content.innerHTML += `
+                    <div class="border rounded-xl overflow-hidden border-gray-200 dark:border-gray-700">
+                        <div class="flex items-center gap-2 p-3 bg-gray-50 dark:bg-gray-700/50">
+                            <span class="text-xl">${activity.icon || '📌'}</span>
+                            <span class="font-bold text-gray-800 dark:text-white text-sm">${activity.name}</span>
+                            <span class="ml-auto text-xs font-bold px-2.5 py-1 rounded-full border ${correctClass}">${badge}</span>
+                        </div>
+                        <div class="p-3">
+                            <ol class="space-y-1.5">${stepsHtml}</ol>
+                        </div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('answerModal').classList.remove('hidden');
+        }
+
+        function closeAnswerModal() {
+            document.getElementById('answerModal').classList.add('hidden');
+        }
+
+        // === MODAL PENILAIAN ===
         function openGradeModal(submissionId, studentName, currentScore, currentFeedback) {
-            // Set Action URL form secara dinamis
             const form = document.getElementById('gradeForm');
             form.action = `/submissions/${submissionId}/grade`;
-
-            // Isi data ke dalam modal
             document.getElementById('studentName').textContent = studentName;
             document.getElementById('score').value = currentScore !== null ? currentScore : '';
-            document.getElementById('feedback').value = currentFeedback;
-
-            // Tampilkan modal
+            document.getElementById('feedback').value = currentFeedback || '';
             document.getElementById('gradeModal').classList.remove('hidden');
         }
 

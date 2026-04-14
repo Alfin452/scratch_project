@@ -11,6 +11,10 @@ class Submission extends Model
 
     protected $guarded = ['id'];
 
+    protected $casts = [
+        'answer_data' => 'array',
+    ];
+
     // --- RELATIONS ---
 
     // Submission ini milik siapa? (Siswa)
