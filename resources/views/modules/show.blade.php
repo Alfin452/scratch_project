@@ -20,68 +20,93 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            {{-- Detail Modul --}}
-            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden mb-8">
-                <div class="p-6 md:p-8">
-                    <div class="flex items-start justify-between">
-                        <div>
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200 mb-2">
-                                BAB {{ $module->order }}
-                            </span>
-                            <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">{{ $module->title }}</h1>
-                            <p class="text-gray-500 dark:text-gray-400">{{ $module->description }}</p>
-                        </div>
-                        <div class="flex gap-2">
-                            <a href="{{ route('modules.edit', $module->id) }}" class="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg text-sm font-bold transition">Edit</a>
-                        </div>
+            <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden mb-8">
+                <div class="p-8 md:p-10 border-b border-gray-100 dark:border-gray-700 bg-gradient-to-r from-gray-50 to-white dark:from-gray-800 dark:to-gray-900 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div>
+                        <span class="inline-flex items-center px-3 py-1 rounded-full bg-indigo-100 text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-300 text-xs font-bold tracking-wide uppercase mb-3">
+                            BAB {{ $module->order }}
+                        </span>
+                        <h1 class="text-3xl font-extrabold text-gray-900 dark:text-white mb-2">{{ $module->title }}</h1>
+                        <p class="text-gray-500 dark:text-gray-400">{{ $module->description }}</p>
                     </div>
-                    <div class="mt-8 prose dark:prose-invert max-w-none p-6 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700">
-                        {!! $module->content !!}
+                    <div class="flex gap-3">
+                        <a href="{{ route('modules.edit', $module->id) }}" class="px-5 py-2.5 bg-yellow-500 rotate-0 hover:-rotate-2 transition hover:bg-yellow-600 text-white rounded-xl text-sm font-bold shadow-md">Edit Bab</a>
                     </div>
                 </div>
-            </div>
 
-            {{-- Daftar Tugas (Admin View) --}}
-            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
-                <div class="p-6 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center">
-                    <h3 class="font-bold text-lg text-gray-800 dark:text-white">Daftar Tugas Praktik</h3>
-                    <a href="{{ route('tasks.create', $module->id) }}" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold rounded-lg transition">
-                        + Tambah Soal
-                    </a>
-                </div>
-                <div class="p-6">
-                    @if($module->tasks->count() > 0)
-                    <div class="space-y-4">
-                        @foreach($module->tasks as $task)
-                        <div class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl border border-gray-200 dark:border-gray-600">
-                            <div class="flex items-center gap-4">
-                                <div class="w-8 h-8 flex items-center justify-center bg-white dark:bg-gray-800 rounded-lg font-bold text-indigo-600 shadow-sm border border-gray-100 dark:border-gray-600">
-                                    {{ $loop->iteration }}
-                                </div>
-                                <div>
-                                    <h4 class="font-bold text-gray-900 dark:text-white">{{ $task->title }}</h4>
-                                    @if($task->deadline)
-                                    <p class="text-xs text-red-500">Due: {{ $task->deadline->format('d M Y, H:i') }}</p>
-                                    @endif
-                                </div>
-                            </div>
-                            <div class="flex gap-2">
-                                <a href="{{ route('submissions.index', $task->id) }}" class="px-3 py-1.5 text-xs bg-indigo-100 text-indigo-700 rounded-lg hover:bg-indigo-200 transition">Submisi</a>
-                                <a href="{{ route('tasks.edit', $task->id) }}" class="p-1.5 text-gray-400 hover:text-yellow-500 transition"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                                    </svg></a>
-                                <form action="{{ route('tasks.destroy', $task->id) }}" method="POST" onsubmit="return confirm('Hapus tugas ini?');">
-                                    @csrf @method('DELETE')
-                                    <button type="submit" class="p-1.5 text-gray-400 hover:text-red-500 transition"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                        </svg></button>
-                                </form>
-                            </div>
+                <div class="p-8 md:p-10">
+                    <div class="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
+                        <h3 class="font-extrabold text-xl text-gray-800 dark:text-white flex items-center gap-2">
+                            <svg class="w-6 h-6 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                            Kurikulum Bab
+                        </h3>
+                        <div class="flex gap-3">
+                            <a href="{{ route('sub_modules.create', $module->id) }}" class="px-4 py-2 bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300 hover:bg-emerald-200 text-sm font-bold rounded-xl transition flex items-center gap-1 shadow-sm">
+                                + Subbab (Materi)
+                            </a>
+                            <a href="{{ route('tasks.create', $module->id) }}" class="px-4 py-2 bg-indigo-100 text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-300 hover:bg-indigo-200 text-sm font-bold rounded-xl transition flex items-center gap-1 shadow-sm">
+                                + Evaluasi (Tugas)
+                            </a>
                         </div>
-                        @endforeach
                     </div>
+
+                    @if($curriculum->count() > 0)
+                        <div class="relative border-l-2 border-indigo-100 dark:border-indigo-900 ml-4 lg:ml-8 space-y-8 pb-4">
+                            @foreach($curriculum as $item)
+                                <div class="relative pl-8 sm:pl-12">
+                                    {{-- Titik Garis (Timeline Dot) --}}
+                                    <div class="absolute -left-[17px] top-1/2 -translate-y-1/2 w-8 h-8 rounded-full border-4 border-white dark:border-gray-800 flex items-center justify-center font-bold text-xs shadow-sm
+                                        {{ $item->item_type == 'submodule' ? 'bg-emerald-100 text-emerald-600 border-emerald-500' : 'bg-indigo-100 text-indigo-600 border-indigo-500' }}">
+                                        {{ $item->order }}
+                                    </div>
+
+                                    <div class="bg-gray-50 dark:bg-gray-700/30 rounded-2xl border border-gray-200 dark:border-gray-600 p-5 hover:border-indigo-300 dark:hover:border-indigo-500 transition-colors shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                                        <div class="flex items-start gap-4">
+                                            <div class="mt-1 w-12 h-12 flex items-center justify-center rounded-xl shrink-0
+                                                {{ $item->item_type == 'submodule' ? 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400' : 'bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400' }}">
+                                                @if($item->item_type == 'submodule')
+                                                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z"></path></svg>
+                                                @else
+                                                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.381z" clip-rule="evenodd"></path></svg>
+                                                @endif
+                                            </div>
+                                            <div>
+                                                <div class="flex items-center gap-2 mb-1">
+                                                    <span class="text-xs font-black uppercase tracking-wider {{ $item->item_type == 'submodule' ? 'text-emerald-500' : 'text-indigo-500' }}">
+                                                        {{ $item->item_type == 'submodule' ? 'Materi Bacaan' : 'Tugas Praktik' }}
+                                                    </span>
+                                                    @if($item->item_type == 'task' && $item->deadline)
+                                                        <span class="px-2 py-0.5 bg-red-100 text-red-600 text-[10px] rounded-md font-bold">Due: {{ $item->deadline->format('d M') }}</span>
+                                                    @endif
+                                                </div>
+                                                <h4 class="font-extrabold text-gray-900 dark:text-white text-lg">{{ $item->title }}</h4>
+                                            </div>
+                                        </div>
+
+                                        <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+                                            @if($item->item_type == 'task')
+                                                <a href="{{ route('submissions.index', $item->id) }}" class="px-4 py-2 bg-indigo-50 dark:bg-indigo-900/30 hover:bg-indigo-100 text-indigo-600 dark:text-indigo-400 font-bold text-sm rounded-xl transition">Nilai Siswa</a>
+                                            @endif
+                                            
+                                            <a href="{{ $item->item_type == 'submodule' ? route('sub_modules.edit', $item->id) : route('tasks.edit', $item->id) }}" class="w-10 h-10 flex items-center justify-center bg-white dark:bg-gray-800 text-gray-400 hover:text-yellow-500 rounded-xl shadow-sm border border-gray-200 dark:border-gray-600 transition"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg></a>
+                                            
+                                            <form action="{{ $item->item_type == 'submodule' ? route('sub_modules.destroy', $item->id) : route('tasks.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Hapus item kurikulum ini?');" class="inline-block">
+                                                @csrf @method('DELETE')
+                                                <button type="submit" class="w-10 h-10 flex items-center justify-center bg-white dark:bg-gray-800 text-gray-400 hover:text-red-500 rounded-xl shadow-sm border border-gray-200 dark:border-gray-600 transition"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
                     @else
-                    <p class="text-gray-500 italic text-center">Belum ada tugas.</p>
+                        <div class="text-center py-12 px-4 border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-3xl bg-gray-50 dark:bg-gray-800/50">
+                            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                <path vector-effect="non-scaling-stroke" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+                            </svg>
+                            <h3 class="mt-2 text-sm font-semibold text-gray-900 dark:text-white">Kosong</h3>
+                            <p class="mt-1 text-sm text-gray-500">Bab ini belum memiliki materi atau tugas.</p>
+                        </div>
                     @endif
                 </div>
             </div>

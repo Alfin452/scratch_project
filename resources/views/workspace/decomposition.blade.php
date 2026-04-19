@@ -287,7 +287,7 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <button @click="window.location.reload()" class="px-8 py-4 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-white font-black rounded-2xl transition active:scale-95">Main Lagi</button>
                     <a href="{{ $nextUrl }}" class="px-8 py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-2xl shadow-lg shadow-emerald-600/20 transition transform hover:-translate-y-1 active:scale-95 flex items-center justify-center gap-2">
-                        <span>{{ $nextTask ? 'Tugas Selanjutnya' : 'Selesai Modul' }}</span>
+                        <span>Lanjut ke Aktivitas Berikutnya</span>
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
                     </a>
                 </div>

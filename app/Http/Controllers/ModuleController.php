@@ -59,7 +59,6 @@ class ModuleController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'content' => 'required|string', // Validasi input form bernama 'content'
             'order' => 'required|integer',
         ]);
 
@@ -67,8 +66,7 @@ class ModuleController extends Controller
             'title' => $request->title,
             'slug' => Str::slug($request->title),
             'description' => $request->description,
-            // PERBAIKAN: Gunakan input('content') agar tidak bentrok dengan protected property
-            'content' => $request->input('content'),
+            'content' => '', // Dummy content
             'order' => $request->order,
             'is_active' => true,
         ]);
@@ -105,7 +103,6 @@ class ModuleController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'content' => 'required|string', // Menggunakan $request->input('content') nanti
             'order' => 'required|integer',
             'is_active' => 'boolean',
         ]);
@@ -114,7 +111,7 @@ class ModuleController extends Controller
             'title' => $request->title,
             'slug' => Str::slug($request->title),
             'description' => $request->description,
-            'content' => $request->input('content'),
+            'content' => '', // Dummy content
             'order' => $request->order,
             'is_active' => $request->boolean('is_active'),
         ]);
@@ -142,9 +139,6 @@ class ModuleController extends Controller
     /**
      * Display the specified resource.
      */
-    /**
-     * Display the specified resource.
-     */
     public function show(Module $module)
     {
         /** @var User $user */
@@ -155,19 +149,71 @@ class ModuleController extends Controller
             abort(404);
         }
 
-        // Ambil daftar semua modul untuk Sidebar Navigasi samping
+        $module->load(['subModules', 'tasks']);
+
+        // Gabungkan submodules dan tasks, lalu urutkan
+        $curriculum = collect();
+        foreach($module->subModules as $subModule) {
+            $subModule->item_type = 'submodule';
+            $curriculum->push($subModule);
+        }
+        foreach($module->tasks as $task) {
+            $task->item_type = 'task';
+            $curriculum->push($task);
+        }
+        $curriculum = $curriculum->sortBy('order')->values();
+
         if ($user->isTeacher()) {
-            $allModules = Module::orderBy('order')->get();
-        } else {
-            $allModules = Module::where('is_active', true)->orderBy('order')->get();
+            return view('modules.show', compact('module', 'curriculum'));
         }
 
-        // Cari Modul Sebelumnya & Selanjutnya (berdasarkan urutan/order)
-        // Kita filter dari $allModules yang sudah diambil di atas agar efisien
+        // Logic Siswa (Student)
+        $allModules = Module::where('is_active', true)->orderBy('order')->get();
+        
+        // --- CEK GEMBOK MODUL (MODULE LOCKING) ---
+        // Verifikasi apakah semua modul sebelumnya sudah komplit
+        $isLocked = false;
+        foreach ($allModules as $mod) {
+            if ($mod->id === $module->id) break; // Cek berurutan sampai modul saat ini
+            
+            // Periksa tasks
+            $mod->loadMissing('tasks.submissions', 'subModules');
+            foreach ($mod->tasks as $task) {
+                $sub = $task->submissions->where('user_id', $user->id)->first();
+                if (!$sub) {
+                    $isLocked = true;
+                    break 2; // Langsung keluar dari semua loop
+                }
+            }
+            // Periksa submodules
+            foreach ($mod->subModules as $subm) {
+                $prog = \App\Models\StudentProgress::where('user_id', $user->id)
+                                    ->where('sub_module_id', $subm->id)->first();
+                if (!$prog) {
+                    $isLocked = true;
+                    break 2;
+                }
+            }
+        }
+
+        if ($isLocked) {
+            return redirect()->route('dashboard')->withErrors(['Bab ini masih terkunci! Selesaikan bab sebelumnya terlebih dahulu.']);
+        }
+        // ----------------------------------------
+        
         $previous = $allModules->where('order', '<', $module->order)->sortByDesc('order')->first();
         $next = $allModules->where('order', '>', $module->order)->sortBy('order')->first();
 
-        return view('modules.show', compact('module', 'allModules', 'previous', 'next'));
+        // Ambil data submission tasks dan studentprogress untuk module ini
+        $submissions = \App\Models\Submission::where('user_id', $user->id)
+            ->whereIn('task_id', $module->tasks->pluck('id'))
+            ->get()->keyBy('task_id');
+            
+        $progress = \App\Models\StudentProgress::where('user_id', $user->id)
+            ->whereIn('sub_module_id', $module->subModules->pluck('id'))
+            ->get()->keyBy('sub_module_id');
+
+        return view('modules.show_student', compact('module', 'allModules', 'previous', 'next', 'curriculum', 'submissions', 'progress'));
     }
 
     /**

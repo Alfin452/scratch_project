@@ -30,6 +30,15 @@ Route::middleware('auth')->group(function () {
     Route::get('/modules/{module}/tasks/create', [TaskController::class, 'create'])->name('tasks.create');
     Route::post('/modules/{module}/tasks', [TaskController::class, 'store'])->name('tasks.store');
 
+    // SubModules (Materi)
+    Route::get('/modules/{module}/sub-modules/create', [App\Http\Controllers\SubModuleController::class, 'create'])->name('sub_modules.create');
+    Route::post('/modules/{module}/sub-modules', [App\Http\Controllers\SubModuleController::class, 'store'])->name('sub_modules.store');
+    Route::get('/sub-modules/{sub_module}/edit', [App\Http\Controllers\SubModuleController::class, 'edit'])->name('sub_modules.edit');
+    Route::put('/sub-modules/{sub_module}', [App\Http\Controllers\SubModuleController::class, 'update'])->name('sub_modules.update');
+    Route::delete('/sub-modules/{sub_module}', [App\Http\Controllers\SubModuleController::class, 'destroy'])->name('sub_modules.destroy');
+    Route::get('/workspace/sub-modules/{sub_module}', [App\Http\Controllers\SubModuleController::class, 'showStudent'])->name('sub_modules.show_student');
+    Route::post('/workspace/sub-modules/{sub_module}/complete', [App\Http\Controllers\SubModuleController::class, 'complete'])->name('sub_modules.complete');
+
     // 2. Edit, Update, Delete Task (Cukup Task ID)
     Route::get('/tasks/{task}/edit', [TaskController::class, 'edit'])->name('tasks.edit');
     Route::put('/tasks/{task}', [TaskController::class, 'update'])->name('tasks.update');

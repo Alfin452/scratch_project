@@ -19,4 +19,9 @@ class Module extends Model
     {
         return $this->hasMany(Task::class);
     }
+
+    public function subModules()
+    {
+        return $this->hasMany(SubModule::class);
+    }
 }

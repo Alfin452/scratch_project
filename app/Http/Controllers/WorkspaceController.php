@@ -13,19 +13,48 @@ class WorkspaceController extends Controller
     {
         $user = Auth::user();
 
-        // Cari tugas berikutnya di modul yang sama
+        // Cari Modul
+        $module = $task->module;
+        $nextUrl = route('dashboard'); 
         $nextTask = null;
-        if ($task->module_id) {
-            $nextTask = Task::where('module_id', $task->module_id)
-                ->where('id', '>', $task->id)
-                ->orderBy('id', 'asc')
-                ->first();
-        }
 
-        // URL tujuan jika tidak ada tugas lagi (kembali ke modul)
-        $nextUrl = $nextTask 
-            ? route('workspace.show', $nextTask->id) 
-            : ($task->module_id ? route('modules.show', $task->module_id) : route('student.tasks'));
+        if ($module) {
+            // Ambil kurikulum
+            $module->load(['subModules', 'tasks']);
+            $curriculum = collect();
+            foreach($module->subModules as $sm) {
+                $sm->item_type = 'submodule';
+                $curriculum->push($sm);
+            }
+            foreach($module->tasks as $t) {
+                $t->item_type = 'task';
+                $curriculum->push($t);
+            }
+            $curriculum = $curriculum->sortBy('order')->values();
+
+            // Cari index tugas ini
+            $currentIndex = $curriculum->search(function ($item) use ($task) {
+                return $item->item_type === 'task' && $item->id === $task->id;
+            });
+
+            // Cari item selanjutnya
+            $nextItem = ($currentIndex !== false && isset($curriculum[$currentIndex + 1])) 
+                        ? $curriculum[$currentIndex + 1] 
+                        : null;
+
+            if ($nextItem) {
+                $nextUrl = $nextItem->item_type === 'submodule' 
+                            ? route('sub_modules.show_student', $nextItem->id) 
+                            : route('workspace.show', $nextItem->id);
+            } else {
+                $nextModule = \App\Models\Module::where('is_active', true)->where('order', '>', $module->order)->orderBy('order')->first();
+                if ($nextModule) {
+                    $nextUrl = route('modules.show', $nextModule->id);
+                } else {
+                    $nextUrl = route('dashboard');
+                }
+            }
+        }
 
         // Cek apakah siswa sudah pernah submit tugas ini?
         $submission = Submission::where('user_id', $user->id)

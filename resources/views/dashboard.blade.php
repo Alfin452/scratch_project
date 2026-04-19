@@ -311,29 +311,39 @@ if ($hour >= 5 && $hour < 11) {
 
                             <div class="space-y-4">
                                 @foreach($modules as $mod)
-                                <div class="gsap-module-card opacity-0 translate-y-4 group bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 hover:border-indigo-300 dark:hover:border-indigo-500 hover:shadow-lg hover:shadow-indigo-500/10 transition-all duration-300 relative overflow-hidden">
+                                <div class="gsap-module-card opacity-0 translate-y-4 group bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 hover:border-indigo-300 dark:hover:border-indigo-500 hover:shadow-lg hover:shadow-indigo-500/10 transition-all duration-300 relative overflow-hidden {{ !$mod->is_unlocked ? 'opacity-60 grayscale' : '' }}">
 
-                                    {{-- Hover Effect Decoration --}}
+                                    {{-- Hover Effect Decoration (Hanya jika unlocked) --}}
+                                    @if($mod->is_unlocked)
                                     <div class="absolute top-0 right-0 w-32 h-32 bg-indigo-50 dark:bg-indigo-900/20 rounded-full blur-3xl -mr-16 -mt-16 transition-opacity opacity-0 group-hover:opacity-100"></div>
+                                    @endif
 
                                     <div class="flex flex-col sm:flex-row gap-6 relative z-10">
                                         <div class="shrink-0">
-                                            <div class="w-20 h-20 rounded-2xl bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 flex flex-col items-center justify-center font-bold border border-indigo-100 dark:border-indigo-800 group-hover:bg-indigo-600 group-hover:text-white transition-colors duration-300">
-                                                <span class="text-[10px] uppercase tracking-wide opacity-70 mb-1">BAB</span>
-                                                <span class="text-3xl">{{ $mod->order }}</span>
+                                            <div class="w-20 h-20 rounded-2xl {{ $mod->is_unlocked ? 'bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 border-indigo-100 dark:border-indigo-800 group-hover:bg-indigo-600 group-hover:text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-500 border-gray-200 dark:border-gray-600' }} flex flex-col items-center justify-center font-bold border transition-colors duration-300">
+                                                @if($mod->is_unlocked)
+                                                    <span class="text-[10px] uppercase tracking-wide opacity-70 mb-1">BAB</span>
+                                                    <span class="text-3xl">{{ $mod->order }}</span>
+                                                @else
+                                                    <svg class="w-8 h-8 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                                                @endif
                                             </div>
                                         </div>
 
                                         <div class="flex-1 min-w-0 flex flex-col justify-center">
                                             <div class="flex items-center justify-between mb-2">
-                                                <h4 class="text-lg font-bold text-gray-900 dark:text-white truncate pr-4 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                                                <h4 class="text-lg font-bold text-gray-900 dark:text-white truncate pr-4 {{ $mod->is_unlocked ? 'group-hover:text-indigo-600 dark:group-hover:text-indigo-400' : '' }} transition-colors">
                                                     {{ $mod->title }}
                                                 </h4>
+                                                @if($mod->is_unlocked)
                                                 <a href="{{ route('modules.show', $mod->id) }}" class="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-400 flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white transition-all duration-300 transform group-hover:translate-x-1">
                                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                                                     </svg>
                                                 </a>
+                                                @else
+                                                <span class="text-xs font-bold text-gray-400 px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded-full">Terkunci</span>
+                                                @endif
                                             </div>
                                             <p class="text-sm text-gray-500 dark:text-gray-400 line-clamp-2 mb-4 pr-8">{{ $mod->description }}</p>
 

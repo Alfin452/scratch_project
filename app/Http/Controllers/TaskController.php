@@ -26,7 +26,12 @@ class TaskController extends Controller
             abort(403);
         }
 
-        return view('tasks.create', compact('module'));
+        $nextOrder = max(
+            $module->subModules()->max('order') ?? 0,
+            $module->tasks()->max('order') ?? 0
+        ) + 1;
+
+        return view('tasks.create', compact('module', 'nextOrder'));
     }
 
     public function store(Request $request, Module $module)
@@ -60,6 +65,7 @@ class TaskController extends Controller
                 'deadline'    => $request->deadline,
                 'type'        => 'decomposition',
                 'content'     => $content,
+                'order'       => $request->input('order', 0),
             ]);
         } elseif ($type === 'drag_and_drop') {
             $request->validate([
@@ -86,6 +92,7 @@ class TaskController extends Controller
                 'deadline'    => $request->deadline,
                 'type'        => 'drag_and_drop',
                 'content'     => $content,
+                'order'       => $request->input('order', 0),
             ]);
         } else {
             $request->validate([
@@ -107,6 +114,7 @@ class TaskController extends Controller
                 'deadline'             => $request->deadline,
                 'starter_project_path' => $path,
                 'type'                 => 'scratch',
+                'order'                => $request->input('order', 0),
             ]);
         }
 
@@ -154,6 +162,7 @@ class TaskController extends Controller
                 'instruction' => $request->instruction,
                 'deadline'    => $request->deadline,
                 'content'     => $content,
+                'order'       => $request->input('order', $task->order),
             ]);
         } elseif ($type === 'drag_and_drop') {
             $request->validate([
@@ -178,6 +187,7 @@ class TaskController extends Controller
                 'instruction' => $request->instruction,
                 'deadline'    => $request->deadline,
                 'content'     => $content,
+                'order'       => $request->input('order', $task->order),
             ]);
         } else {
             $request->validate([
@@ -198,6 +208,7 @@ class TaskController extends Controller
                 'title'       => $request->title,
                 'instruction' => $request->instruction,
                 'deadline'    => $request->deadline,
+                'order'       => $request->input('order', $task->order),
             ]);
         }
 

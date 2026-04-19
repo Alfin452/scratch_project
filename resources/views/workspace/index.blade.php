@@ -224,7 +224,7 @@
                         <div class="mt-8">
                             <a href="{{ $nextUrl }}" 
                                 class="w-full inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-extrabold shadow-lg shadow-indigo-600/20 transition-all transform hover:-translate-y-0.5">
-                                <span>{{ $nextTask ? 'Tugas Berikutnya' : 'Selesai Modul' }}</span>
+                                <span>Lanjut ke Aktivitas Berikutnya</span>
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
                             </a>
                         </div>

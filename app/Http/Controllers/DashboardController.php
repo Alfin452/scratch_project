@@ -93,20 +93,49 @@ class DashboardController extends Controller
             }]);
         }])->where('is_active', true)->orderBy('order')->get();
 
-        // Siapkan Data Chart Skor Per Bab
+        // Siapkan Data Chart Skor Per Bab & Status Gembok
         $moduleLabels = [];
         $moduleScores = [];
+        
+        $isPreviousModuleCompleted = true; // Modul 1 selalu terbuka
 
         foreach ($modules as $mod) {
             $scorePerModule = 0;
+            // Anggap modul ini komplit, lalu verifikasi
+            $isModuleCompleted = true;
+
+            // Verifikasi Tugas
             foreach ($mod->tasks as $task) {
+                // Periksa apakah tugas ini punya status 'graded' atau setidaknya 'submitted'
                 $sub = $task->submissions->first();
-                if ($sub && $sub->score) {
-                    $scorePerModule += $sub->score;
+                if ($sub) {
+                    if ($sub->score) $scorePerModule += $sub->score;
+                } else {
+                    // Jika ada satu saja tugas yang belum disubmit, modul ini belum tamat
+                    $isModuleCompleted = false;
                 }
             }
+
+            // Verifikasi SubModule (Materi Bacaan)
+            // (Hanya membebankan query kecil di memori / lazy load kalau belum ke-load)
+            foreach ($mod->subModules as $subModule) {
+               $progressRecord = \App\Models\StudentProgress::where('user_id', $user->id)
+                                  ->where('sub_module_id', $subModule->id)->first();
+               if (!$progressRecord) {
+                   $isModuleCompleted = false;
+               }
+            }
+
+            // Set atribut gembok
+            // Modul terbuka JIKA modul sebelumnya sudah komplet.
+            $mod->is_unlocked = $isPreviousModuleCompleted;
+
             $moduleLabels[] = "Bab " . $mod->order;
             $moduleScores[] = $scorePerModule;
+
+            // Update pengecekan untuk iterasi loop berikutnya (Modul selanjutnya)
+            // Jika modul saat ini gagal komplet, maka modul selanjutnya akan terkunci
+            $isPreviousModuleCompleted = $isModuleCompleted;
         }
 
         return view('dashboard', compact(
