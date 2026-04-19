@@ -29,14 +29,39 @@ class TaskController extends Controller
         return view('tasks.create', compact('module'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request, Module $module)
     {
         $type = $request->input('type', 'scratch');
 
-        if ($type === 'drag_and_drop') {
+        if ($type === 'decomposition') {
+            $request->validate([
+                'title'                => 'required|string|max:255',
+                'instruction'          => 'required|string',
+                'deadline'             => 'nullable|date',
+                'main_description'     => 'required|string',
+                'min_decomposition'    => 'required|integer|min:1',
+                'activities'           => 'required|array|min:1',
+                'activities.*.name'    => 'required|string|max:255',
+                'activities.*.icon'    => 'required|string',
+                'activities.*.steps'   => 'required|array|min:1',
+                'activities.*.steps.*' => 'required|string|max:500',
+            ]);
+
+            $content = [
+                'main_description'  => $request->input('main_description'),
+                'min_decomposition' => (int) $request->input('min_decomposition'),
+                'activities'        => $request->input('activities'),
+            ];
+
+            Task::create([
+                'module_id'   => $module->id,
+                'title'       => $request->title,
+                'instruction' => $request->instruction,
+                'deadline'    => $request->deadline,
+                'type'        => 'decomposition',
+                'content'     => $content,
+            ]);
+        } elseif ($type === 'drag_and_drop') {
             $request->validate([
                 'title'                => 'required|string|max:255',
                 'instruction'          => 'required|string',
@@ -100,14 +125,37 @@ class TaskController extends Controller
         return view('tasks.edit', compact('task'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Task $task)
     {
         $type = $task->type; // Tipe tidak bisa diubah setelah dibuat
 
-        if ($type === 'drag_and_drop') {
+        if ($type === 'decomposition') {
+            $request->validate([
+                'title'                => 'required|string|max:255',
+                'instruction'          => 'required|string',
+                'deadline'             => 'nullable|date',
+                'main_description'     => 'required|string',
+                'min_decomposition'    => 'required|integer|min:1',
+                'activities'           => 'required|array|min:1',
+                'activities.*.name'    => 'required|string|max:255',
+                'activities.*.icon'    => 'required|string',
+                'activities.*.steps'   => 'required|array|min:1',
+                'activities.*.steps.*' => 'required|string|max:500',
+            ]);
+
+            $content = [
+                'main_description'  => $request->input('main_description'),
+                'min_decomposition' => (int) $request->input('min_decomposition'),
+                'activities'        => $request->input('activities'),
+            ];
+
+            $task->update([
+                'title'       => $request->title,
+                'instruction' => $request->instruction,
+                'deadline'    => $request->deadline,
+                'content'     => $content,
+            ]);
+        } elseif ($type === 'drag_and_drop') {
             $request->validate([
                 'title'                => 'required|string|max:255',
                 'instruction'          => 'required|string',

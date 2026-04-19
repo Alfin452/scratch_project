@@ -19,8 +19,9 @@
             @endif
 
             <span class="ml-auto inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold
-                {{ $task->type === 'drag_and_drop' ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400' : 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400' }}">
-                {{ $task->type === 'drag_and_drop' ? '🔀 Drag & Drop' : '💻 Scratch' }}
+                {{ $task->type === 'drag_and_drop' ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400' : 
+                   ($task->type === 'decomposition' ? 'bg-sky-100 dark:bg-sky-900/30 text-sky-700 dark:text-sky-400' : 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400') }}">
+                {{ $task->type === 'drag_and_drop' ? '🔀 Drag & Drop' : ($task->type === 'decomposition' ? '🧩 Pecah Masalah' : '💻 Scratch') }}
             </span>
         </div>
 
@@ -49,7 +50,7 @@
                             <th class="px-6 py-4">Nama Siswa</th>
                             <th class="px-6 py-4">Waktu Pengumpulan</th>
                             <th class="px-6 py-4">
-                                {{ $task->type === 'drag_and_drop' ? 'Jawaban' : 'File Project' }}
+                                {{ in_array($task->type, ['drag_and_drop', 'decomposition']) ? 'Jawaban' : 'File Project' }}
                             </th>
                             <th class="px-6 py-4">Status & Nilai</th>
                             <th class="px-6 py-4 text-center">Aksi</th>
@@ -79,12 +80,12 @@
 
                             {{-- File / Jawaban --}}
                             <td class="px-6 py-4">
-                                @if($task->type === 'drag_and_drop')
+                                @if($task->type === 'drag_and_drop' || $task->type === 'decomposition')
                                     @if($sub->answer_data && count($sub->answer_data) > 0)
-                                    <button onclick="openAnswerModal({{ $sub->id }})"
-                                        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 text-xs font-semibold hover:bg-emerald-100 dark:hover:bg-emerald-900/40 transition">
+                                    <button onclick="openAnswerModal({{ $sub->id }}, '{{ $task->type }}')"
+                                        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg {{ $task->type === 'decomposition' ? 'bg-sky-50 dark:bg-sky-900/20 text-sky-700 dark:text-sky-400 border-sky-200 dark:border-sky-800' : 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800' }} border text-xs font-semibold hover:opacity-80 transition">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-                                        Lihat Jawaban ({{ count($sub->answer_data) }} kegiatan)
+                                        Lihat Jawaban
                                     </button>
 
                                     {{-- Hidden data for modal --}}
@@ -215,7 +216,7 @@
 
     <script>
         // === MODAL JAWABAN ===
-        function openAnswerModal(submissionId) {
+        function openAnswerModal(submissionId, type) {
             const raw = document.getElementById('answer-data-' + submissionId);
             if (!raw) return;
             const data = JSON.parse(raw.textContent);
@@ -223,32 +224,69 @@
             const content = document.getElementById('answerModalContent');
             content.innerHTML = '';
 
-            data.forEach((activity, i) => {
-                const correctClass = activity.correct
-                    ? 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400'
-                    : 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800 text-red-700 dark:text-red-400';
-                const badge = activity.correct ? '✓ Benar' : '✗ Perlu Ditinjau';
+            if (type === 'decomposition') {
+                // Render Decomposition Data
+                const decomp = data.decomposition || [];
+                const focus = data.focus || {};
 
-                let stepsHtml = (activity.answer || []).map((step, j) => `
-                    <li class="flex items-start gap-2 text-sm">
-                        <span class="flex-shrink-0 w-5 h-5 mt-0.5 flex items-center justify-center rounded-full ${activity.correct ? 'bg-emerald-200 dark:bg-emerald-800 text-emerald-700 dark:text-emerald-300' : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400'} text-xs font-bold">${j+1}</span>
-                        <span class="text-gray-700 dark:text-gray-300">${step}</span>
-                    </li>
-                `).join('');
-
+                // Bagian 1: Hasil Dekomposisi
+                let decompHtml = decomp.map(d => `<div class="flex items-center gap-2 p-2 bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-100 dark:border-gray-700"><span class="text-xl">${d.icon}</span><span class="text-xs font-bold text-gray-700 dark:text-gray-300">${d.name}</span></div>`).join('');
+                
                 content.innerHTML += `
-                    <div class="border rounded-xl overflow-hidden border-gray-200 dark:border-gray-700">
-                        <div class="flex items-center gap-2 p-3 bg-gray-50 dark:bg-gray-700/50">
-                            <span class="text-xl">${activity.icon || '📌'}</span>
-                            <span class="font-bold text-gray-800 dark:text-white text-sm">${activity.name}</span>
-                            <span class="ml-auto text-xs font-bold px-2.5 py-1 rounded-full border ${correctClass}">${badge}</span>
-                        </div>
-                        <div class="p-3">
-                            <ol class="space-y-1.5">${stepsHtml}</ol>
-                        </div>
+                    <div class="space-y-4">
+                        <section>
+                            <h4 class="text-[10px] font-black uppercase tracking-widest text-sky-500 mb-3">1. Hasil Dekomposisi (${decomp.length} sub-tugas)</h4>
+                            <div class="grid grid-cols-2 gap-2">${decompHtml}</div>
+                        </section>
+                        <hr class="border-gray-100 dark:border-gray-700">
+                        <section>
+                            <h4 class="text-[10px] font-black uppercase tracking-widest text-sky-500 mb-3">2. Fokus & Algoritma</h4>
+                            <div class="p-4 bg-sky-50 dark:bg-sky-900/20 border border-sky-100 dark:border-sky-800 rounded-2xl">
+                                <div class="flex items-center gap-3 mb-4">
+                                    <span class="text-3xl">${focus.icon || '📌'}</span>
+                                    <span class="font-black text-gray-900 dark:text-white capitalize">${focus.name || 'Pilihan'}</span>
+                                </div>
+                                <ol class="space-y-2">
+                                    ${(focus.algorithm || []).map((step, idx) => `
+                                        <li class="flex items-start gap-3">
+                                            <span class="flex-shrink-0 w-5 h-5 flex items-center justify-center rounded-full bg-white dark:bg-gray-800 text-sky-600 font-bold text-[10px] border border-sky-100 dark:border-sky-700">${idx+1}</span>
+                                            <p class="text-sm font-medium text-gray-700 dark:text-gray-300 leading-tight">${step}</p>
+                                        </li>
+                                    `).join('')}
+                                </ol>
+                            </div>
+                        </section>
                     </div>
                 `;
-            });
+            } else {
+                // Render Drag & Drop Data
+                data.forEach((activity, i) => {
+                    const correctClass = activity.correct
+                        ? 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400'
+                        : 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800 text-red-700 dark:text-red-400';
+                    const badge = activity.correct ? '✓ Benar' : '✗ Perlu Ditinjau';
+
+                    let stepsHtml = (activity.answer || []).map((step, j) => `
+                        <li class="flex items-start gap-2 text-sm">
+                            <span class="flex-shrink-0 w-5 h-5 mt-0.5 flex items-center justify-center rounded-full ${activity.correct ? 'bg-emerald-200 dark:bg-emerald-800 text-emerald-700 dark:text-emerald-300' : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400'} text-xs font-bold">${j+1}</span>
+                            <span class="text-gray-700 dark:text-gray-300">${step}</span>
+                        </li>
+                    `).join('');
+
+                    content.innerHTML += `
+                        <div class="border rounded-xl overflow-hidden border-gray-200 dark:border-gray-700">
+                            <div class="flex items-center gap-2 p-3 bg-gray-50 dark:bg-gray-700/50">
+                                <span class="text-xl">${activity.icon || '📌'}</span>
+                                <span class="font-bold text-gray-800 dark:text-white text-sm">${activity.name}</span>
+                                <span class="ml-auto text-xs font-bold px-2.5 py-1 rounded-full border ${correctClass}">${badge}</span>
+                            </div>
+                            <div class="p-3">
+                                <ol class="space-y-1.5">${stepsHtml}</ol>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
 
             document.getElementById('answerModal').classList.remove('hidden');
         }

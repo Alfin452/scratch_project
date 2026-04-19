@@ -33,6 +33,10 @@ class WorkspaceController extends Controller
             ->first();
 
         // Route ke view yang berbeda berdasarkan tipe tugas
+        if ($task->type === 'decomposition') {
+            return view('workspace.decomposition', compact('task', 'submission', 'nextUrl', 'nextTask'));
+        }
+
         if ($task->type === 'drag_and_drop') {
             return view('workspace.drag_drop', compact('task', 'submission', 'nextUrl', 'nextTask'));
         }
@@ -42,8 +46,8 @@ class WorkspaceController extends Controller
 
     public function submit(\Illuminate\Http\Request $request, \App\Models\Task $task)
     {
-        // Jika tugas bertipe drag_and_drop, simpan jawaban JSON
-        if ($task->type === 'drag_and_drop') {
+        // Jika tugas bertipe drag_and_drop atau decomposition, simpan jawaban JSON
+        if ($task->type === 'drag_and_drop' || $task->type === 'decomposition') {
             $request->validate([
                 'answer_data' => 'required', // Bisa array atau string JSON
             ]);
