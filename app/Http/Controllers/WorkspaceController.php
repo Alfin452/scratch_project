@@ -70,13 +70,24 @@ class WorkspaceController extends Controller
             return view('workspace.drag_drop', compact('task', 'submission', 'nextUrl', 'nextTask'));
         }
 
+        if ($task->type === 'classification') {
+            if ($submission && $submission->status === 'graded') {
+                return view('workspace.classification_result', compact('task', 'submission', 'nextUrl', 'nextTask'));
+            }
+            return view('workspace.classification', compact('task', 'submission', 'nextUrl', 'nextTask'));
+        }
+
+        if ($task->type === 'simulation') {
+            return view('workspace.simulation', compact('task', 'submission', 'nextUrl', 'nextTask'));
+        }
+
         return view('workspace.index', compact('task', 'submission', 'nextUrl', 'nextTask'));
     }
 
     public function submit(\Illuminate\Http\Request $request, \App\Models\Task $task)
     {
-        // Jika tugas bertipe drag_and_drop atau decomposition, simpan jawaban JSON
-        if ($task->type === 'drag_and_drop' || $task->type === 'decomposition') {
+        // Jika tugas bertipe drag_and_drop, decomposition, classification, atau simulation simpan jawaban JSON
+        if ($task->type === 'drag_and_drop' || $task->type === 'decomposition' || $task->type === 'classification' || $task->type === 'simulation') {
             $request->validate([
                 'answer_data' => 'required', // Bisa array atau string JSON
             ]);
@@ -88,17 +99,40 @@ class WorkspaceController extends Controller
                 $answerData = json_decode($answerData, true);
             }
 
+            // Auto-Scoring untuk Classification
+            $score = null;
+            $status = 'submitted';
+            if ($task->type === 'classification') {
+                $correctCount = 0;
+                $questions = $task->content['questions'] ?? [];
+                $totalQuestions = count($questions);
+                
+                if ($totalQuestions > 0 && is_array($answerData)) {
+                    foreach ($questions as $index => $q) {
+                        if (isset($answerData[$index]) && $answerData[$index] === $q['answer']) {
+                            $correctCount++;
+                        }
+                    }
+                    $score = round(($correctCount / $totalQuestions) * 100);
+                    $status = 'graded'; // Langsung nilai
+                }
+            } elseif ($task->type === 'simulation') {
+                // Untuk simulasi, jika sudah dikirim berarti dianggap selesai 100
+                $score = 100;
+                $status = 'graded';
+            }
+
             $submission = Submission::updateOrCreate(
                 ['user_id' => Auth::id(), 'task_id' => $task->id],
                 [
                     'answer_data' => $answerData,
-                    'status'      => 'submitted',
-                    'score'       => null,
+                    'status'      => $status,
+                    'score'       => $score,
                     'feedback'    => null,
                 ]
             );
 
-            return response()->json(['message' => 'Jawaban berhasil dikumpulkan!'], 200);
+            return response()->json(['message' => 'Jawaban berhasil dikumpulkan!', 'redirect' => route('workspace.show', $task->id)], 200);
         }
 
         // Tugas Scratch - simpan file

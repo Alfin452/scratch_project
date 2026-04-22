@@ -61,8 +61,30 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
                         </svg>
                     </div>
-                    <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-2">Pecah Masalah <span class="text-xs font-semibold bg-sky-100 text-sky-700 dark:bg-sky-900/50 dark:text-sky-400 px-2 py-0.5 rounded-full ml-1">Baru!</span></h3>
+                    <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-2">Pecah Masalah</h3>
                     <p class="text-sm text-gray-500 dark:text-gray-400 text-center">Siswa belajar dekomposisi dengan memecah masalah besar menjadi bagian kecil.</p>
+                </button>
+
+                <button @click="type='classification'"
+                    class="group flex flex-col items-center p-8 bg-white dark:bg-gray-800 rounded-2xl border-2 border-gray-200 dark:border-gray-700 hover:border-fuchsia-500 dark:hover:border-fuchsia-500 hover:shadow-xl hover:shadow-fuchsia-500/10 transition-all duration-300 text-left">
+                    <div class="w-16 h-16 flex items-center justify-center bg-fuchsia-100 dark:bg-fuchsia-900/40 rounded-2xl mb-4 group-hover:bg-fuchsia-600 transition-colors duration-300">
+                        <svg class="w-9 h-9 text-fuchsia-600 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-2">Klasifikasi Ganda</h3>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 text-center">Siswa mengklasifikasikan skenario ke dalam dua kategori pilihan (Benar/Salah).</p>
+                </button>
+
+                <button @click="type='simulation'"
+                    class="group flex flex-col items-center p-8 bg-white dark:bg-gray-800 rounded-2xl border-2 border-gray-200 dark:border-gray-700 hover:border-orange-500 dark:hover:border-orange-500 hover:shadow-xl hover:shadow-orange-500/10 transition-all duration-300 text-left">
+                    <div class="w-16 h-16 flex items-center justify-center bg-orange-100 dark:bg-orange-900/40 rounded-2xl mb-4 group-hover:bg-orange-600 transition-colors duration-300">
+                        <svg class="w-9 h-9 text-orange-600 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-2">Simulasi Komputer <span class="text-xs font-semibold bg-orange-100 text-orange-700 dark:bg-orange-900/50 dark:text-orange-400 px-2 py-0.5 rounded-full ml-1">Baru!</span></h3>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 text-center">Siswa mensimulasikan instruksi untuk menggambar pada grid (Mode Programmer/Komputer).</p>
                 </button>
             </div>
 
@@ -424,6 +446,196 @@
                 </div>
             </div>
 
+            {{-- === FORM SOAL KLASIFIKASI (MULTIPLE CHOICE) === --}}
+            <div x-show="type==='classification'" class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm">
+                <div class="flex items-center gap-3 p-6 border-b border-gray-200 dark:border-gray-700 bg-fuchsia-50 dark:bg-fuchsia-900/20">
+                    <div class="w-10 h-10 flex items-center justify-center bg-fuchsia-600 rounded-xl">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-gray-800 dark:text-white">Soal Klasifikasi Ganda</h3>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">Siswa diminta memilih di antara dua kategori untuk setiap skenario</p>
+                    </div>
+                    <button type="button" @click="type=null" class="ml-auto text-xs text-gray-500 hover:text-fuchsia-600 transition underline">Ganti Tipe</button>
+                </div>
+                <div class="p-6">
+                    <form action="{{ route('tasks.store', $module->id) }}" method="POST" class="space-y-6">
+                        @csrf
+                        <input type="hidden" name="type" value="classification">
+
+                        {{-- Info Dasar --}}
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            <div class="md:col-span-2">
+                                <label for="title_cls" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Judul Aktivitas <span class="text-red-500">*</span></label>
+                                <input type="text" name="title" id="title_cls" required value="{{ old('title') }}"
+                                    class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-fuchsia-500 focus:ring-fuchsia-500 shadow-sm"
+                                    placeholder="Contoh: Berlatih 1 – Membedakan Algoritma dan Non-Algoritma">
+                            </div>
+                            <div class="md:col-span-2">
+                                <label for="instruction_cls" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Instruksi untuk Siswa <span class="text-red-500">*</span></label>
+                                <textarea name="instruction" id="instruction_cls" rows="3" required
+                                    class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-fuchsia-500 focus:ring-fuchsia-500 shadow-sm"
+                                    placeholder="Tentukan apakah kegiatan tersebut termasuk algoritma atau bukan algoritma dengan cara memilih jawaban yang tersedia.">{{ old('instruction') }}</textarea>
+                            </div>
+                            
+                            {{-- Input Kategori Opsi Ganda --}}
+                            <div class="md:col-span-2 bg-gray-50 dark:bg-gray-900/30 p-4 rounded-2xl border border-gray-200 dark:border-gray-700">
+                                <h4 class="text-sm font-bold text-gray-700 dark:text-gray-300 mb-3">Definisi Pilihan Kategori <span class="text-red-500">*</span></h4>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label for="category_a" class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">Teks Tombol Kategori 1 (Misal: "Algoritma" / "Benar")</label>
+                                        <input type="text" name="category_a" id="category_a" x-model="categoryA" required
+                                            class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-fuchsia-500 focus:ring-fuchsia-500 shadow-sm"
+                                            placeholder="Algoritma">
+                                    </div>
+                                    <div>
+                                        <label for="category_b" class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">Teks Tombol Kategori 2 (Misal: "Bukan Algoritma" / "Salah")</label>
+                                        <input type="text" name="category_b" id="category_b" x-model="categoryB" required
+                                            class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-fuchsia-500 focus:ring-fuchsia-500 shadow-sm"
+                                            placeholder="Bukan Algoritma">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label for="deadline_cls" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Batas Waktu (Opsional)</label>
+                                <input type="text" name="deadline" id="deadline_cls"
+                                    class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-fuchsia-500 focus:ring-fuchsia-500 shadow-sm"
+                                    placeholder="Pilih tanggal dan jam...">
+                            </div>
+                            <div>
+                                <label for="order_cls" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Urutan <span class="text-red-500">*</span></label>
+                                <input type="number" name="order" id="order_cls" required value="{{ old('order', $nextOrder) }}"
+                                    class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-fuchsia-500 focus:ring-fuchsia-500 shadow-sm">
+                            </div>
+                        </div>
+
+                        {{-- Daftar Soal Klasifikasi --}}
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <h4 class="text-sm font-bold text-gray-700 dark:text-gray-300">Daftar Pertanyaan / Skenario <span class="text-red-500">*</span></h4>
+                                <span class="text-xs text-gray-500 dark:text-gray-400" x-text="questions.length + ' soal ditambahkan'"></span>
+                            </div>
+
+                            <template x-for="(question, qIdx) in questions" :key="qIdx">
+                                <div class="border border-gray-200 dark:border-gray-700 rounded-2xl shadow-sm p-4 bg-gray-50 dark:bg-gray-700/50">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <span class="flex items-center justify-center w-7 h-7 rounded-full bg-fuchsia-600 text-white text-xs font-bold" x-text="'Soal ' + (qIdx + 1)"></span>
+                                        <button type="button" @click="questions.splice(qIdx, 1)" x-show="questions.length > 1"
+                                            class="flex items-center justify-center w-8 h-8 rounded-lg text-red-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                        </button>
+                                    </div>
+
+                                    <div class="space-y-4">
+                                        <div>
+                                            <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Pernyataan/Kegiatan <span class="text-red-500">*</span></label>
+                                            <input type="text" :name="'questions['+qIdx+'][text]'" x-model="question.text" required
+                                                class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-fuchsia-500 focus:ring-fuchsia-500 shadow-sm text-sm"
+                                                placeholder="Contoh: Menyusun langkah membuat mi instan">
+                                        </div>
+
+                                        <div>
+                                            <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Jawaban Benar <span class="text-red-500">*</span></label>
+                                            <div class="flex items-center gap-4 mt-2">
+                                                <label class="inline-flex items-center">
+                                                    <input type="radio" :name="'questions['+qIdx+'][answer]'" x-model="question.answer" :value="categoryA" required class="text-fuchsia-600 focus:ring-fuchsia-500">
+                                                    <span class="ml-2 text-sm text-gray-700 dark:text-gray-300" x-text="categoryA || 'Kategori 1'"></span>
+                                                </label>
+                                                <label class="inline-flex items-center">
+                                                    <input type="radio" :name="'questions['+qIdx+'][answer]'" x-model="question.answer" :value="categoryB" required class="text-fuchsia-600 focus:ring-fuchsia-500">
+                                                    <span class="ml-2 text-sm text-gray-700 dark:text-gray-300" x-text="categoryB || 'Kategori 2'"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Alasan / Penjelasan (Feedback) <span class="text-red-500">*</span></label>
+                                            <textarea :name="'questions['+qIdx+'][explanation]'" x-model="question.explanation" rows="2" required
+                                                class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-fuchsia-500 focus:ring-fuchsia-500 shadow-sm text-sm"
+                                                placeholder="Benar, karena kegiatan ini memiliki langkah-langkah yang jelas, terurut, dan dapat diikuti."></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+
+                            <button type="button" @click="addQuestion()"
+                                class="w-full flex items-center justify-center gap-2 p-4 border-2 border-dashed border-fuchsia-300 dark:border-fuchsia-700 rounded-2xl text-fuchsia-600 dark:text-fuchsia-400 hover:bg-fuchsia-50 dark:hover:bg-fuchsia-900/20 hover:border-fuchsia-500 transition font-semibold text-sm">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                                Tambah Pertanyaan
+                            </button>
+                        </div>
+
+                        <div class="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+                            <a href="{{ route('modules.show', $module->id) }}" class="px-5 py-2.5 text-sm font-semibold text-gray-700 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 transition">Batal</a>
+                            <button type="submit" :disabled="questions.length === 0 || !categoryA || !categoryB"
+                                class="px-6 py-2.5 text-sm font-semibold text-white bg-fuchsia-600 rounded-xl hover:bg-fuchsia-700 shadow-lg hover:shadow-fuchsia-500/30 transition disabled:opacity-50 disabled:cursor-not-allowed">
+                                Simpan Kuis
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            {{-- === FORM SOAL SIMULASI === --}}
+            <div x-show="type==='simulation'" class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm">
+                <div class="flex items-center gap-3 p-6 border-b border-gray-200 dark:border-gray-700 bg-orange-50 dark:bg-orange-900/20">
+                    <div class="w-10 h-10 flex items-center justify-center bg-orange-600 rounded-xl">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5"></path></svg>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-gray-800 dark:text-white">Soal Simulasi Instruksi Komputer</h3>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">Mesin interaktif menggambar pada grid.</p>
+                    </div>
+                    <button type="button" @click="type=null" class="ml-auto text-xs text-gray-500 hover:text-orange-600 transition underline">Ganti Tipe</button>
+                </div>
+                <div class="p-6">
+                    <form action="{{ route('tasks.store', $module->id) }}" method="POST" class="space-y-6">
+                        @csrf
+                        <input type="hidden" name="type" value="simulation">
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            <div class="md:col-span-2">
+                                <label for="title_sim" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Judul Aktivitas <span class="text-red-500">*</span></label>
+                                <input type="text" name="title" id="title_sim" required value="{{ old('title') }}"
+                                    class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-orange-500 focus:ring-orange-500 shadow-sm"
+                                    placeholder="Contoh: Aktivitas 3 – Simulasi Instruksi Komputer">
+                            </div>
+                            <div class="md:col-span-2">
+                                <label for="instruction_sim" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Instruksi Awal (Opsional)</label>
+                                <textarea name="instruction" id="instruction_sim" rows="3" required
+                                    class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-orange-500 focus:ring-orange-500 shadow-sm"
+                                    placeholder="Kerjakan simulasi ini baik sebagai Programmer maupun Komputer.">{{ old('instruction', 'Selesaikan latihan simulasi instruksi berikut dengan memilih peran sebagai Programmer maupun Komputer.') }}</textarea>
+                            </div>
+                            
+                            <div>
+                                <label for="deadline_sim" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Batas Waktu (Opsional)</label>
+                                <input type="text" name="deadline" id="deadline_sim"
+                                    class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-orange-500 focus:ring-orange-500 shadow-sm"
+                                    placeholder="Pilih tanggal dan jam...">
+                            </div>
+                            <div>
+                                <label for="order_sim" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Urutan <span class="text-red-500">*</span></label>
+                                <input type="number" name="order" id="order_sim" required value="{{ old('order', $nextOrder) }}"
+                                    class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-orange-500 focus:ring-orange-500 shadow-sm">
+                            </div>
+                        </div>
+
+                        <div class="p-4 bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 rounded-xl">
+                            <p class="text-sm text-orange-700 dark:text-orange-400"><strong>Catatan:</strong> Mesin permainan (engine) simulasi bersifat otomatis (hardcoded) seperti di screenshot referensi. Kamu tidak perlu menyusun konten soal secara manual.</p>
+                        </div>
+
+                        <div class="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+                            <a href="{{ route('modules.show', $module->id) }}" class="px-5 py-2.5 text-sm font-semibold text-gray-700 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 transition">Batal</a>
+                            <button type="submit"
+                                class="px-6 py-2.5 text-sm font-semibold text-white bg-orange-600 rounded-xl hover:bg-orange-700 shadow-lg hover:shadow-orange-500/30 transition">
+                                Simpan Simulasi
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -436,6 +648,13 @@
                 activities: [],
                 availableIcons: ['🏃','🎒','🏫','💻','🍜','📱','🔌','📧','🛒','🍳','🚿','📚','✈️','🚗','🚌','🏊','⚽','🎮','🎵','📷','🧹','🛏️','🍎','💊','📝','🔦','🧺','🧴','📅','🍽️','📝','🛋️','🎨'],
 
+                // For Classification task
+                categoryA: 'Algoritma',
+                categoryB: 'Bukan Algoritma',
+                questions: [
+                    {text: '', answer: 'Algoritma', explanation: ''}
+                ],
+
                 addActivity() {
                     const icons = this.availableIcons;
                     const icon = icons[this.activities.length % icons.length];
@@ -445,13 +664,21 @@
                         steps: ['', '', ''],
                         showIconPicker: false
                     });
+                },
+                
+                addQuestion() {
+                    this.questions.push({
+                        text: '',
+                        answer: this.categoryA || '',
+                        explanation: ''
+                    });
                 }
             };
         }
 
         document.addEventListener('DOMContentLoaded', function () {
             // Flatpickr untuk semua input deadline
-            const deadlineInputs = ['#deadline_scratch', '#deadline_dd', '#deadline_dec'];
+            const deadlineInputs = ['#deadline_scratch', '#deadline_dd', '#deadline_dec', '#deadline_cls', '#deadline_sim'];
             deadlineInputs.forEach(sel => {
                 const el = document.querySelector(sel);
                 if (el) {

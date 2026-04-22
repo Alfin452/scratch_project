@@ -284,6 +284,187 @@
             </div>
         </div>
 
+        @elseif($task->type === 'classification')
+        {{-- === EDIT FORM KLASIFIKASI GANDA === --}}
+        <div x-data="editClassification({{ json_encode($task->content) }})" class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm">
+            <div class="flex items-center gap-3 p-6 border-b border-gray-200 dark:border-gray-700 bg-fuchsia-50 dark:bg-fuchsia-900/20">
+                <div class="w-10 h-10 flex items-center justify-center bg-fuchsia-600 rounded-xl">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
+                </div>
+                <div>
+                    <h3 class="font-bold text-gray-800 dark:text-white">Edit Soal Klasifikasi Ganda</h3>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Tipe soal tidak dapat diubah setelah dibuat</p>
+                </div>
+            </div>
+            <div class="p-6">
+                <form action="{{ route('tasks.update', $task->id) }}" method="POST" class="space-y-6">
+                    @csrf
+                    @method('PUT')
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Judul Aktivitas <span class="text-red-500">*</span></label>
+                            <input type="text" name="title" required value="{{ old('title', $task->title) }}"
+                                class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-fuchsia-500 focus:ring-fuchsia-500 shadow-sm">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Instruksi untuk Siswa <span class="text-red-500">*</span></label>
+                            <textarea name="instruction" rows="3" required
+                                class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-fuchsia-500 focus:ring-fuchsia-500 shadow-sm">{{ old('instruction', $task->instruction) }}</textarea>
+                        </div>
+                        
+                        <div class="md:col-span-2 bg-gray-50 dark:bg-gray-900/30 p-4 rounded-2xl border border-gray-200 dark:border-gray-700">
+                            <h4 class="text-sm font-bold text-gray-700 dark:text-gray-300 mb-3">Definisi Pilihan Kategori <span class="text-red-500">*</span></h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">Teks Tombol Kategori 1</label>
+                                    <input type="text" name="category_a" x-model="categoryA" required
+                                        class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-fuchsia-500 focus:ring-fuchsia-500 shadow-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">Teks Tombol Kategori 2</label>
+                                    <input type="text" name="category_b" x-model="categoryB" required
+                                        class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-fuchsia-500 focus:ring-fuchsia-500 shadow-sm">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Batas Waktu (Opsional)</label>
+                            <input type="text" name="deadline" id="deadline_edit"
+                                value="{{ old('deadline', $task->deadline ? $task->deadline->format('Y-m-d H:i') : '') }}"
+                                class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-fuchsia-500 focus:ring-fuchsia-500 shadow-sm"
+                                placeholder="Pilih tanggal dan jam...">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Urutan <span class="text-red-500">*</span></label>
+                            <input type="number" name="order" required value="{{ old('order', $task->order) }}"
+                                class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-fuchsia-500 focus:ring-fuchsia-500 shadow-sm">
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <h4 class="text-sm font-bold text-gray-700 dark:text-gray-300">Daftar Pertanyaan / Skenario <span class="text-red-500">*</span></h4>
+                            <span class="text-xs text-gray-500" x-text="questions.length + ' soal ditambahkan'"></span>
+                        </div>
+
+                        <template x-for="(question, qIdx) in questions" :key="qIdx">
+                            <div class="border border-gray-200 dark:border-gray-700 rounded-2xl shadow-sm p-4 bg-gray-50 dark:bg-gray-700/50">
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="flex items-center justify-center w-7 h-7 rounded-full bg-fuchsia-600 text-white text-xs font-bold" x-text="'Soal ' + (qIdx + 1)"></span>
+                                    <button type="button" @click="questions.splice(qIdx, 1)" x-show="questions.length > 1"
+                                        class="flex items-center justify-center w-8 h-8 rounded-lg text-red-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                    </button>
+                                </div>
+
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Pernyataan/Kegiatan <span class="text-red-500">*</span></label>
+                                        <input type="text" :name="'questions['+qIdx+'][text]'" x-model="question.text" required
+                                            class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-fuchsia-500 focus:ring-fuchsia-500 shadow-sm text-sm">
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Jawaban Benar <span class="text-red-500">*</span></label>
+                                        <div class="flex items-center gap-4 mt-2">
+                                            <label class="inline-flex items-center">
+                                                <input type="radio" :name="'questions['+qIdx+'][answer]'" x-model="question.answer" :value="categoryA" required class="text-fuchsia-600 focus:ring-fuchsia-500">
+                                                <span class="ml-2 text-sm text-gray-700 dark:text-gray-300" x-text="categoryA || 'Kategori 1'"></span>
+                                            </label>
+                                            <label class="inline-flex items-center">
+                                                <input type="radio" :name="'questions['+qIdx+'][answer]'" x-model="question.answer" :value="categoryB" required class="text-fuchsia-600 focus:ring-fuchsia-500">
+                                                <span class="ml-2 text-sm text-gray-700 dark:text-gray-300" x-text="categoryB || 'Kategori 2'"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">Alasan / Penjelasan (Feedback) <span class="text-red-500">*</span></label>
+                                        <textarea :name="'questions['+qIdx+'][explanation]'" x-model="question.explanation" rows="2" required
+                                            class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-fuchsia-500 focus:ring-fuchsia-500 shadow-sm text-sm"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+
+                        <button type="button" @click="addQuestion()"
+                            class="w-full flex items-center justify-center gap-2 p-4 border-2 border-dashed border-fuchsia-300 dark:border-fuchsia-700 rounded-2xl text-fuchsia-600 dark:text-fuchsia-400 hover:bg-fuchsia-50 dark:hover:bg-fuchsia-900/20 hover:border-fuchsia-500 transition font-semibold text-sm">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                            Tambah Pertanyaan
+                        </button>
+                    </div>
+
+                    <div class="flex justify-end gap-3 pt-2 border-t border-gray-200 dark:border-gray-700">
+                        <a href="{{ route('modules.show', $task->module_id) }}" class="px-5 py-2.5 text-sm font-semibold text-gray-700 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 transition">Batal</a>
+                        <button type="submit" :disabled="questions.length === 0 || !categoryA || !categoryB"
+                            class="px-6 py-2.5 text-sm font-semibold text-white bg-fuchsia-600 rounded-xl hover:bg-fuchsia-700 shadow-lg hover:shadow-fuchsia-500/30 transition disabled:opacity-50 disabled:cursor-not-allowed">
+                            Update Kuis
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        @elseif($task->type === 'simulation')
+        {{-- === EDIT FORM SIMULASI === --}}
+        <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">
+            <div class="flex items-center gap-3 p-6 border-b border-gray-200 dark:border-gray-700 bg-orange-50 dark:bg-orange-900/20">
+                <div class="w-10 h-10 flex items-center justify-center bg-orange-600 rounded-xl">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5"></path></svg>
+                </div>
+                <div>
+                    <h3 class="font-bold text-gray-800 dark:text-white">Edit Soal Simulasi Komputer</h3>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Tipe soal tidak dapat diubah setelah dibuat</p>
+                </div>
+            </div>
+            <div class="p-6">
+                <form action="{{ route('tasks.update', $task->id) }}" method="POST" class="space-y-6">
+                    @csrf
+                    @method('PUT')
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Judul Aktivitas <span class="text-red-500">*</span></label>
+                            <input type="text" name="title" required value="{{ old('title', $task->title) }}"
+                                class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-orange-500 focus:ring-orange-500 shadow-sm">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Instruksi untuk Siswa <span class="text-red-500">*</span></label>
+                            <textarea name="instruction" rows="3" required
+                                class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-orange-500 focus:ring-orange-500 shadow-sm">{{ old('instruction', $task->instruction) }}</textarea>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Batas Waktu (Opsional)</label>
+                            <input type="text" name="deadline" id="deadline_edit"
+                                value="{{ old('deadline', $task->deadline ? $task->deadline->format('Y-m-d H:i') : '') }}"
+                                class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-orange-500 focus:ring-orange-500 shadow-sm"
+                                placeholder="Pilih tanggal dan jam...">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Urutan <span class="text-red-500">*</span></label>
+                            <input type="number" name="order" required value="{{ old('order', $task->order) }}"
+                                class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-orange-500 focus:ring-orange-500 shadow-sm">
+                        </div>
+                    </div>
+
+                    <div class="p-4 bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 rounded-xl">
+                        <p class="text-sm text-orange-700 dark:text-orange-400"><strong>Catatan:</strong> Mesin permainan (engine) simulasi bersifat otomatis (hardcoded) seperti di screenshot referensi. Kamu tidak perlu menyusun konten soal secara manual.</p>
+                    </div>
+
+                    <div class="flex justify-end gap-3 pt-2 border-t border-gray-200 dark:border-gray-700">
+                        <a href="{{ route('modules.show', $task->module_id) }}" class="px-5 py-2.5 text-sm font-semibold text-gray-700 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 transition">Batal</a>
+                        <button type="submit"
+                            class="px-6 py-2.5 text-sm font-semibold text-white bg-orange-600 rounded-xl hover:bg-orange-700 shadow-lg hover:shadow-orange-500/30 transition">
+                            Update Simulasi
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
         @else
         {{-- === EDIT FORM SCRATCH === --}}
         <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">
@@ -391,6 +572,23 @@
                         icon: icons[this.activities.length % icons.length],
                         steps: ['', '', ''],
                         showIconPicker: false
+                    });
+                }
+            };
+        }
+        
+        function editClassification(content) {
+            return {
+                categoryA: content?.categories?.[0] || 'Kategori 1',
+                categoryB: content?.categories?.[1] || 'Kategori 2',
+                questions: content?.questions || [
+                    {text: '', answer: '', explanation: ''}
+                ],
+                addQuestion() {
+                    this.questions.push({
+                        text: '',
+                        answer: this.categoryA || '',
+                        explanation: ''
                     });
                 }
             };

@@ -67,6 +67,52 @@ class TaskController extends Controller
                 'content'     => $content,
                 'order'       => $request->input('order', 0),
             ]);
+        } elseif ($type === 'classification') {
+            $request->validate([
+                'title'                => 'required|string|max:255',
+                'instruction'          => 'required|string',
+                'deadline'             => 'nullable|date',
+                'category_a'           => 'required|string|max:100',
+                'category_b'           => 'required|string|max:100',
+                'questions'            => 'required|array|min:1',
+                'questions.*.text'     => 'required|string|max:500',
+                'questions.*.answer'   => 'required|string|max:100',
+                'questions.*.explanation'=> 'required|string',
+            ]);
+
+            $content = [
+                'categories' => [
+                    $request->input('category_a'),
+                    $request->input('category_b')
+                ],
+                'questions' => $request->input('questions'),
+            ];
+
+            Task::create([
+                'module_id'   => $module->id,
+                'title'       => $request->title,
+                'instruction' => $request->instruction,
+                'deadline'    => $request->deadline,
+                'type'        => 'classification',
+                'content'     => $content,
+                'order'       => $request->input('order', 0),
+            ]);
+        } elseif ($type === 'simulation') {
+            $request->validate([
+                'title'       => 'required|string|max:255',
+                'instruction' => 'required|string',
+                'deadline'    => 'nullable|date',
+            ]);
+
+            Task::create([
+                'module_id'   => $module->id,
+                'title'       => $request->title,
+                'instruction' => $request->instruction,
+                'deadline'    => $request->deadline,
+                'type'        => 'simulation',
+                'content'     => [], // Kontennya hardcoded di frontend
+                'order'       => $request->input('order', 0),
+            ]);
         } elseif ($type === 'drag_and_drop') {
             $request->validate([
                 'title'                => 'required|string|max:255',
@@ -162,6 +208,48 @@ class TaskController extends Controller
                 'instruction' => $request->instruction,
                 'deadline'    => $request->deadline,
                 'content'     => $content,
+                'order'       => $request->input('order', $task->order),
+            ]);
+        } elseif ($type === 'classification') {
+            $request->validate([
+                'title'                => 'required|string|max:255',
+                'instruction'          => 'required|string',
+                'deadline'             => 'nullable|date',
+                'category_a'           => 'required|string|max:100',
+                'category_b'           => 'required|string|max:100',
+                'questions'            => 'required|array|min:1',
+                'questions.*.text'     => 'required|string|max:500',
+                'questions.*.answer'   => 'required|string|max:100',
+                'questions.*.explanation'=> 'required|string',
+            ]);
+
+            $content = [
+                'categories' => [
+                    $request->input('category_a'),
+                    $request->input('category_b')
+                ],
+                'questions' => $request->input('questions'),
+            ];
+
+            $task->update([
+                'title'       => $request->title,
+                'instruction' => $request->instruction,
+                'deadline'    => $request->deadline,
+                'content'     => $content,
+                'order'       => $request->input('order', $task->order),
+            ]);
+        } elseif ($type === 'simulation') {
+            $request->validate([
+                'title'       => 'required|string|max:255',
+                'instruction' => 'required|string',
+                'deadline'    => 'nullable|date',
+            ]);
+
+            $task->update([
+                'title'       => $request->title,
+                'instruction' => $request->instruction,
+                'deadline'    => $request->deadline,
+                'content'     => [], // Konten hardcoded
                 'order'       => $request->input('order', $task->order),
             ]);
         } elseif ($type === 'drag_and_drop') {
