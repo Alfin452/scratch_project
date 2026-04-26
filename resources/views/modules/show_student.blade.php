@@ -46,8 +46,18 @@
                                 if ($item->item_type == 'submodule') {
                                     $isCompleted = isset($progress[$item->id]);
                                 } else {
-                                    // task is completed if it has a submission
-                                    $isCompleted = isset($submissions[$item->id]);
+                                    if (isset($submissions[$item->id])) {
+                                        $sub = $submissions[$item->id];
+                                        // Jika tugas sudah disubmit tapi belum dinilai (score === null), anggap tuntas agar bisa lanjut.
+                                        // Tapi jika sudah dinilai dan score < 70, belum tuntas.
+                                        if ($sub->score !== null && $sub->score < 70) {
+                                            $isCompleted = false;
+                                        } else {
+                                            $isCompleted = true;
+                                        }
+                                    } else {
+                                        $isCompleted = false;
+                                    }
                                 }
 
                                 if ($isUnlocked) {

@@ -198,4 +198,16 @@ class WorkspaceController extends Controller
 
         return back()->with('success', 'Tugas berhasil dikumpulkan!');
     }
+
+    public function retry(Request $request, Task $task)
+    {
+        $user = Auth::user();
+        
+        // Hapus submission yang ada agar siswa bisa mengulang
+        Submission::where('user_id', $user->id)
+            ->where('task_id', $task->id)
+            ->delete();
+
+        return redirect()->route('workspace.show', $task->id)->with('success', 'Silakan ulangi latihan ini. Berikan yang terbaik!');
+    }
 }

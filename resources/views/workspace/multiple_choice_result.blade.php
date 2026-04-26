@@ -103,24 +103,36 @@
                 </div>
             </div>
 
-            {{-- Navigasi Lanjut --}}
+            {{-- Navigasi Lanjut / Ulangi --}}
             <div class="flex justify-center mb-12">
-                @if ($nextUrl && !$isCourseCompleted)
-                    <a href="{{ $nextUrl }}"
-                       class="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white text-lg font-bold rounded-2xl shadow-xl shadow-blue-500/30 transition transform hover:-translate-y-1 flex items-center gap-3 group">
-                        Berikutnya
-                        <svg class="w-6 h-6 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-                    </a>
+                @if ($submission->score !== null && $submission->score < 70)
+                    <form action="{{ route('workspace.retry', $task->id) }}" method="POST">
+                        @csrf
+                        <button type="submit"
+                           class="px-8 py-4 bg-rose-600 hover:bg-rose-700 text-white text-lg font-bold rounded-2xl shadow-xl shadow-rose-500/30 transition transform hover:-translate-y-1 flex items-center gap-3">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                            Ulangi Latihan
+                        </button>
+                    </form>
                 @else
-                    <a href="{{ route('dashboard') }}"
-                       class="px-8 py-4 bg-emerald-600 hover:bg-emerald-700 text-white text-lg font-bold rounded-2xl shadow-xl shadow-emerald-500/30 transition transform hover:-translate-y-1 flex items-center gap-3">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
-                        Kembali ke Dashboard
-                    </a>
+                    @if ($nextUrl && !$isCourseCompleted)
+                        <a href="{{ $nextUrl }}"
+                           class="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white text-lg font-bold rounded-2xl shadow-xl shadow-blue-500/30 transition transform hover:-translate-y-1 flex items-center gap-3 group">
+                            Berikutnya
+                            <svg class="w-6 h-6 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                        </a>
+                    @else
+                        <a href="{{ route('dashboard') }}"
+                           class="px-8 py-4 bg-emerald-600 hover:bg-emerald-700 text-white text-lg font-bold rounded-2xl shadow-xl shadow-emerald-500/30 transition transform hover:-translate-y-1 flex items-center gap-3">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                            Kembali ke Dashboard
+                        </a>
+                    @endif
                 @endif
             </div>
 
             {{-- FULLSCREEN CELEBRATION OVERLAY --}}
+            @if ($submission->score === null || $submission->score >= 70)
             <div x-data="{ showCelebration: {{ $isCourseCompleted ? 'true' : 'false' }} }">
                 <div x-show="showCelebration" x-transition.opacity.duration.500ms
                     class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/90 backdrop-blur-sm"
@@ -151,6 +163,7 @@
                     </div>
                 </div>
             </div>
+            @endif
 
         </div>
     </div>

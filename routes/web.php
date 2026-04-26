@@ -47,7 +47,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/workspace/task/{task}', [WorkspaceController::class, 'show'])->name('workspace.show');
 
     Route::post('/tasks/{task}/submit', [SubmissionController::class, 'store'])->name('submissions.store');
-    Route::post('/workspace/task/{task}/submit', [WorkspaceController::class, 'submit'])->name('workspace.submit'); // <-- Tambahkan ini
+    Route::post('/workspace/task/{task}/submit', [WorkspaceController::class, 'submit'])->name('workspace.submit');
+    Route::post('/workspace/task/{task}/retry', [WorkspaceController::class, 'retry'])->name('workspace.retry');
     Route::get('/tasks/{task}/submissions', [SubmissionController::class, 'index'])->name('submissions.index');
     Route::put('/submissions/{submission}/grade', [SubmissionController::class, 'grade'])->name('submissions.grade');
     Route::get('/submissions/{submission}/download', [SubmissionController::class, 'download'])
