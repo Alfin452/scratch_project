@@ -113,6 +113,32 @@ class TaskController extends Controller
                 'content'     => [], // Kontennya hardcoded di frontend
                 'order'       => $request->input('order', 0),
             ]);
+        } elseif ($type === 'multiple_choice') {
+            $request->validate([
+                'title'       => 'required|string|max:255',
+                'instruction' => 'required|string',
+                'deadline'    => 'nullable|date',
+                'questions'   => 'required|array|min:1',
+                'questions.*.text' => 'required|string',
+                'questions.*.options' => 'required|array|min:2',
+                'questions.*.options.*' => 'required|string',
+                'questions.*.correct_option' => 'required|integer', // index of the correct option
+            ]);
+
+            // Struktur JSON untuk multiple choice
+            $content = [
+                'questions' => $request->questions
+            ];
+
+            Task::create([
+                'module_id'   => $module->id,
+                'title'       => $request->title,
+                'instruction' => $request->instruction,
+                'deadline'    => $request->deadline,
+                'type'        => 'multiple_choice',
+                'content'     => $content,
+                'order'       => $request->input('order', 0),
+            ]);
         } elseif ($type === 'drag_and_drop') {
             $request->validate([
                 'title'                => 'required|string|max:255',
@@ -250,6 +276,29 @@ class TaskController extends Controller
                 'instruction' => $request->instruction,
                 'deadline'    => $request->deadline,
                 'content'     => [], // Konten hardcoded
+                'order'       => $request->input('order', $task->order),
+            ]);
+        } elseif ($type === 'multiple_choice') {
+            $request->validate([
+                'title'       => 'required|string|max:255',
+                'instruction' => 'required|string',
+                'deadline'    => 'nullable|date',
+                'questions'   => 'required|array|min:1',
+                'questions.*.text' => 'required|string',
+                'questions.*.options' => 'required|array|min:2',
+                'questions.*.options.*' => 'required|string',
+                'questions.*.correct_option' => 'required|integer', // index of the correct option
+            ]);
+
+            $content = [
+                'questions' => $request->questions
+            ];
+
+            $task->update([
+                'title'       => $request->title,
+                'instruction' => $request->instruction,
+                'deadline'    => $request->deadline,
+                'content'     => $content,
                 'order'       => $request->input('order', $task->order),
             ]);
         } elseif ($type === 'drag_and_drop') {
