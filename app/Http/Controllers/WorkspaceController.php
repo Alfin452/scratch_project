@@ -64,7 +64,7 @@ class WorkspaceController extends Controller
             ->first();
 
         if ($task->type === 'scratch') {
-            return view('workspace.scratch', compact('task', 'submission', 'nextUrl', 'nextTask', 'isCourseCompleted'));
+            return view('workspace.index', compact('task', 'submission', 'nextUrl', 'nextTask', 'isCourseCompleted'));
         }
 
         // Route ke view yang berbeda berdasarkan tipe tugas
