@@ -50,7 +50,7 @@ class WorkspaceController extends Controller
             } else {
                 $nextModule = \App\Models\Module::where('is_active', true)->where('order', '>', $module->order)->orderBy('order')->first();
                 if ($nextModule) {
-                    $nextUrl = route('modules.show_student', $nextModule->id);
+                    $nextUrl = route('modules.show', $nextModule->id);
                 } else {
                     $nextUrl = route('dashboard');
                     $isCourseCompleted = true;

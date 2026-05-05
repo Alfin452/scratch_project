@@ -98,6 +98,7 @@ class DashboardController extends Controller
         $moduleScores = [];
         
         $isPreviousModuleCompleted = true; // Modul 1 selalu terbuka
+        $nextModuleToLearn = null; // Menyimpan modul pertama yang belum komplit
 
         foreach ($modules as $mod) {
             $scorePerModule = 0;
@@ -109,7 +110,12 @@ class DashboardController extends Controller
                 // Periksa apakah tugas ini punya status 'graded' atau setidaknya 'submitted'
                 $sub = $task->submissions->first();
                 if ($sub) {
-                    if ($sub->score) $scorePerModule += $sub->score;
+                    if ($sub->score !== null && $sub->score < 70) {
+                        $isModuleCompleted = false; // Jika nilai di bawah KKM, belum tuntas
+                    }
+                    if ($sub->score !== null) {
+                        $scorePerModule += $sub->score;
+                    }
                 } else {
                     // Jika ada satu saja tugas yang belum disubmit, modul ini belum tamat
                     $isModuleCompleted = false;
@@ -124,6 +130,11 @@ class DashboardController extends Controller
                if (!$progressRecord) {
                    $isModuleCompleted = false;
                }
+            }
+
+            // Simpan modul pertama yang belum selesai sebagai target lanjutan
+            if (!$isModuleCompleted && !$nextModuleToLearn && $isPreviousModuleCompleted) {
+                $nextModuleToLearn = $mod;
             }
 
             // Set atribut gembok
@@ -145,7 +156,8 @@ class DashboardController extends Controller
             'progress',
             'modules',
             'moduleLabels',
-            'moduleScores'
+            'moduleScores',
+            'nextModuleToLearn'
         ));
     }
 }

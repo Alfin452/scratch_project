@@ -75,9 +75,7 @@
                                                     <span class="text-xs font-black uppercase tracking-wider {{ $item->item_type == 'submodule' ? 'text-emerald-500' : 'text-indigo-500' }}">
                                                         {{ $item->item_type == 'submodule' ? 'Materi Bacaan' : 'Tugas Praktik' }}
                                                     </span>
-                                                    @if($item->item_type == 'task' && $item->deadline)
-                                                        <span class="px-2 py-0.5 bg-red-100 text-red-600 text-[10px] rounded-md font-bold">Due: {{ $item->deadline->format('d M') }}</span>
-                                                    @endif
+
                                                 </div>
                                                 <h4 class="font-extrabold text-gray-900 dark:text-white text-lg">{{ $item->title }}</h4>
                                             </div>
@@ -304,14 +302,7 @@
                                             <span class="font-bold text-lg truncate">{{ $taskItem->title }}</span>
                                         </div>
 
-                                        @if($taskItem->deadline)
-                                        <div class="text-xs font-medium text-indigo-100 group-hover:text-red-500 ml-11 flex items-center transition-colors">
-                                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                            </svg>
-                                            Batas: {{ $taskItem->deadline->format('d M, H:i') }}
-                                        </div>
-                                        @else
+
                                         <div class="text-xs font-medium text-indigo-200 group-hover:text-indigo-400 ml-11 flex items-center transition-colors">
                                             <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
@@ -319,7 +310,7 @@
                                             </svg>
                                             Mulai Kerjakan
                                         </div>
-                                        @endif
+
                                     </div>
                                     <div class="ml-4">
                                         <div class="p-2 rounded-full bg-white/10 group-hover:bg-indigo-100 group-hover:text-indigo-600 transition-colors">

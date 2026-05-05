@@ -89,25 +89,18 @@ class SubmissionController extends Controller
     }
 
     // Halaman Dashboard Penilaian (Daftar Semua Tugas)
-    // Halaman Dashboard Penilaian (Daftar Semua Tugas)
     public function gradebook()
     {
         /** @var User $user */
         $user = \Illuminate\Support\Facades\Auth::user();
         if (!$user->isTeacher()) abort(403);
 
-        // 1. Ambil Modul beserta tugas-tugasnya (Logic Lama)
+        // 1. Ambil Modul beserta tugas-tugasnya
         $modules = \App\Models\Module::with(['tasks' => function ($query) {
-            $query->withCount('submissions');
+            $query->withCount('submissions')->orderBy('order');
         }])->orderBy('order')->get();
 
-        // 2. TAMBAHAN BARU: Ambil Tugas Mandiri (yang module_id-nya NULL)
-        $independentTasks = \App\Models\Task::whereNull('module_id')
-            ->withCount('submissions')
-            ->latest()
-            ->get();
-
-        return view('submissions.gradebook', compact('modules', 'independentTasks'));
+        return view('submissions.gradebook', compact('modules'));
     }
 
     // Menampilkan riwayat pengumpulan siswa

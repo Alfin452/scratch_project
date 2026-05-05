@@ -56,15 +56,26 @@ if ($hour >= 5 && $hour < 11) {
                                     </span>
                                 </a>
                                 @else
-                                <a href="{{ route('modules.index') }}" class="group relative inline-flex items-center px-8 py-3.5 bg-yellow-400 text-yellow-900 font-bold rounded-full shadow-lg hover:shadow-yellow-400/50 transition-all duration-300 hover:-translate-y-1">
-                                    <span class="flex items-center">
-                                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                        </svg>
-                                        Mulai Belajar
-                                    </span>
-                                </a>
+                                    @if(isset($nextModuleToLearn) && $nextModuleToLearn)
+                                        <a href="{{ route('modules.show', $nextModuleToLearn->id) }}" class="group relative inline-flex items-center px-8 py-3.5 bg-yellow-400 text-yellow-900 font-bold rounded-full shadow-lg hover:shadow-yellow-400/50 transition-all duration-300 hover:-translate-y-1">
+                                            <span class="flex items-center">
+                                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                                </svg>
+                                                Lanjutkan: {{ Str::limit($nextModuleToLearn->title, 20) }}
+                                            </span>
+                                        </a>
+                                    @else
+                                        <a href="{{ route('modules.index') }}" class="group relative inline-flex items-center px-8 py-3.5 bg-yellow-400 text-yellow-900 font-bold rounded-full shadow-lg hover:shadow-yellow-400/50 transition-all duration-300 hover:-translate-y-1">
+                                            <span class="flex items-center">
+                                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                </svg>
+                                                Mulai Belajar
+                                            </span>
+                                        </a>
+                                    @endif
                                 @endif
                             </div>
                         </div>

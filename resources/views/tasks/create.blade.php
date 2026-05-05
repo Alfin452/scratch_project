@@ -131,12 +131,7 @@
                                     placeholder="Jelaskan langkah-langkah yang harus dilakukan siswa...">{{ old('instruction') }}</textarea>
                             </div>
 
-                            <div>
-                                <label for="deadline_scratch" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Batas Waktu (Opsional)</label>
-                                <input type="text" name="deadline" id="deadline_scratch"
-                                    class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-indigo-500 focus:ring-indigo-500 shadow-sm"
-                                    placeholder="Pilih tanggal dan jam...">
-                            </div>
+
 
                             <div>
                                 <label for="order_scratch" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Urutan <span class="text-red-500">*</span></label>
@@ -197,12 +192,7 @@
                                     class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-emerald-500 focus:ring-emerald-500 shadow-sm"
                                     placeholder="Pilih dua kegiatan sehari-hari, lalu susun langkah-langkahnya agar menjadi algoritma yang benar.">{{ old('instruction') }}</textarea>
                             </div>
-                            <div>
-                                <label for="deadline_dd" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Batas Waktu (Opsional)</label>
-                                <input type="text" name="deadline" id="deadline_dd"
-                                    class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-emerald-500 focus:ring-emerald-500 shadow-sm"
-                                    placeholder="Pilih tanggal dan jam...">
-                            </div>
+
                             <div>
                                 <label for="order_dd" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Urutan <span class="text-red-500">*</span></label>
                                 <input type="number" name="order" id="order_dd" required value="{{ old('order', $nextOrder) }}"
@@ -351,12 +341,7 @@
                                     class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-sky-500 focus:ring-sky-500 shadow-sm"
                                     placeholder="Contoh: Mengadakan acara makan bersama kelas">
                             </div>
-                            <div>
-                                <label for="deadline_dec" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Batas Waktu (Opsional)</label>
-                                <input type="text" name="deadline" id="deadline_dec"
-                                    class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-sky-500 focus:ring-sky-500 shadow-sm"
-                                    placeholder="Pilih tanggal dan jam...">
-                            </div>
+
                             <div>
                                 <label for="order_dec" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Urutan <span class="text-red-500">*</span></label>
                                 <input type="number" name="order" id="order_dec" required value="{{ old('order', $nextOrder) }}"
@@ -508,12 +493,7 @@
                                 </div>
                             </div>
 
-                            <div>
-                                <label for="deadline_cls" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Batas Waktu (Opsional)</label>
-                                <input type="text" name="deadline" id="deadline_cls"
-                                    class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-fuchsia-500 focus:ring-fuchsia-500 shadow-sm"
-                                    placeholder="Pilih tanggal dan jam...">
-                            </div>
+
                             <div>
                                 <label for="order_cls" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Urutan <span class="text-red-500">*</span></label>
                                 <input type="number" name="order" id="order_cls" required value="{{ old('order', $nextOrder) }}"
@@ -620,12 +600,6 @@
                                     placeholder="Contoh: Pilihlah satu jawaban yang paling tepat dari opsi yang tersedia.">{{ old('instruction') }}</textarea>
                             </div>
                             
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Batas Waktu (Opsional)</label>
-                                <input type="text" name="deadline" id="deadline_mc"
-                                    class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-pink-500 focus:ring-pink-500 shadow-sm"
-                                    placeholder="Pilih tanggal dan jam...">
-                            </div>
                             <div>
                                 <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Urutan <span class="text-red-500">*</span></label>
                                 <input type="number" name="order" required value="{{ old('order', $nextOrder) }}"
@@ -743,12 +717,7 @@
                                     placeholder="Kerjakan simulasi ini baik sebagai Programmer maupun Komputer.">{{ old('instruction', 'Selesaikan latihan simulasi instruksi berikut dengan memilih peran sebagai Programmer maupun Komputer.') }}</textarea>
                             </div>
                             
-                            <div>
-                                <label for="deadline_sim" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Batas Waktu (Opsional)</label>
-                                <input type="text" name="deadline" id="deadline_sim"
-                                    class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-orange-500 focus:ring-orange-500 shadow-sm"
-                                    placeholder="Pilih tanggal dan jam...">
-                            </div>
+
                             <div>
                                 <label for="order_sim" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Urutan <span class="text-red-500">*</span></label>
                                 <input type="number" name="order" id="order_sim" required value="{{ old('order', $nextOrder) }}"
@@ -854,22 +823,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', function () {
-            // Flatpickr untuk semua input deadline
-            const deadlineInputs = ['#deadline_scratch', '#deadline_dd', '#deadline_dec', '#deadline_cls', '#deadline_sim', '#deadline_mc'];
-            deadlineInputs.forEach(sel => {
-                const el = document.querySelector(sel);
-                if (el) {
-                    flatpickr(el, {
-                        enableTime: true,
-                        dateFormat: 'Y-m-d H:i',
-                        altInput: true,
-                        altFormat: 'j F Y, H:i',
-                        time_24hr: true,
-                        minDate: 'today',
-                        locale: 'id'
-                    });
-                }
-            });
+            // ...
         });
     </script>
 </x-app-layout>

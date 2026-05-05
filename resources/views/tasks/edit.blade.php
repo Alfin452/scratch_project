@@ -47,13 +47,7 @@
                                 class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-sky-500 focus:ring-sky-500 shadow-sm"
                                 placeholder="Contoh: Mengadakan acara makan bersama kelas">
                         </div>
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Batas Waktu (Opsional)</label>
-                            <input type="text" name="deadline" id="deadline_edit"
-                                value="{{ old('deadline', $task->deadline ? $task->deadline->format('Y-m-d H:i') : '') }}"
-                                class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-sky-500 focus:ring-sky-500 shadow-sm"
-                                placeholder="Pilih tanggal dan jam...">
-                        </div>
+
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Urutan <span class="text-red-500">*</span></label>
                             <input type="number" name="order" required value="{{ old('order', $task->order) }}"
@@ -179,13 +173,7 @@
                             <textarea name="instruction" rows="3" required
                                 class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-emerald-500 focus:ring-emerald-500 shadow-sm">{{ old('instruction', $task->instruction) }}</textarea>
                         </div>
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Batas Waktu (Opsional)</label>
-                            <input type="text" name="deadline" id="deadline_edit"
-                                value="{{ old('deadline', $task->deadline ? $task->deadline->format('Y-m-d H:i') : '') }}"
-                                class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-emerald-500 focus:ring-emerald-500 shadow-sm"
-                                placeholder="Pilih tanggal dan jam...">
-                        </div>
+
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Urutan <span class="text-red-500">*</span></label>
                             <input type="number" name="order" required value="{{ old('order', $task->order) }}"
@@ -329,13 +317,7 @@
                             </div>
                         </div>
 
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Batas Waktu (Opsional)</label>
-                            <input type="text" name="deadline" id="deadline_edit"
-                                value="{{ old('deadline', $task->deadline ? $task->deadline->format('Y-m-d H:i') : '') }}"
-                                class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-fuchsia-500 focus:ring-fuchsia-500 shadow-sm"
-                                placeholder="Pilih tanggal dan jam...">
-                        </div>
+
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Urutan <span class="text-red-500">*</span></label>
                             <input type="number" name="order" required value="{{ old('order', $task->order) }}"
@@ -436,13 +418,7 @@
                                 class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-orange-500 focus:ring-orange-500 shadow-sm">{{ old('instruction', $task->instruction) }}</textarea>
                         </div>
                         
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Batas Waktu (Opsional)</label>
-                            <input type="text" name="deadline" id="deadline_edit"
-                                value="{{ old('deadline', $task->deadline ? $task->deadline->format('Y-m-d H:i') : '') }}"
-                                class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-orange-500 focus:ring-orange-500 shadow-sm"
-                                placeholder="Pilih tanggal dan jam...">
-                        </div>
+
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Urutan <span class="text-red-500">*</span></label>
                             <input type="number" name="order" required value="{{ old('order', $task->order) }}"
@@ -495,13 +471,7 @@
                                 class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-pink-500 focus:ring-pink-500 shadow-sm">{{ old('instruction', $task->instruction) }}</textarea>
                         </div>
                         
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Batas Waktu (Opsional)</label>
-                            <input type="text" name="deadline" id="deadline_edit"
-                                value="{{ old('deadline', $task->deadline ? $task->deadline->format('Y-m-d H:i') : '') }}"
-                                class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-pink-500 focus:ring-pink-500 shadow-sm"
-                                placeholder="Pilih tanggal dan jam...">
-                        </div>
+
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Urutan <span class="text-red-500">*</span></label>
                             <input type="number" name="order" required value="{{ old('order', $task->order) }}"
@@ -614,13 +584,7 @@
                             class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-indigo-500 focus:ring-indigo-500 shadow-sm">{{ old('instruction', $task->instruction) }}</textarea>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Batas Waktu (Opsional)</label>
-                            <input type="text" name="deadline" id="deadline_edit"
-                                value="{{ old('deadline', $task->deadline ? $task->deadline->format('Y-m-d H:i') : '') }}"
-                                class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-indigo-500 focus:ring-indigo-500 shadow-sm"
-                                placeholder="Pilih tanggal dan jam...">
-                        </div>
+
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Urutan <span class="text-red-500">*</span></label>
                             <input type="number" name="order" required value="{{ old('order', $task->order) }}"
@@ -765,17 +729,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', function () {
-            const el = document.querySelector('#deadline_edit');
-            if (el) {
-                flatpickr(el, {
-                    enableTime: true,
-                    dateFormat: 'Y-m-d H:i',
-                    altInput: true,
-                    altFormat: 'j F Y, H:i',
-                    time_24hr: true,
-                    locale: 'id'
-                });
-            }
+            // Edit script specific initialization if needed
         });
     </script>
 </x-app-layout>

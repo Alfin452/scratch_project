@@ -94,6 +94,7 @@
                                     <span class="text-xs text-gray-400 italic">Belum ada jawaban</span>
                                     @endif
                                 @else
+                                @if($task->type === 'scratch')
                                     @if($sub->project_file_path)
                                     <a href="{{ route('submissions.download', $sub->id) }}"
                                         class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800 text-xs font-semibold hover:bg-indigo-100 dark:hover:bg-indigo-900/40 transition">
@@ -169,6 +170,10 @@
             </div>
         </div>
     </div>
+
+    </div>
+
+
 
     {{-- ======================================================== --}}
     {{-- MODAL: PENILAIAN --}}
