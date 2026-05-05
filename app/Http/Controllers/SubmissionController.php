@@ -150,4 +150,21 @@ class SubmissionController extends Controller
             ['Content-Type' => 'application/x.scratch.sb3']
         );
     }
+
+    // Fungsi untuk melayani file .sb3 dengan header CORS agar bisa dimuat oleh Turbowarp
+    public function streamScratch(\App\Models\Submission $submission)
+    {
+        if (!$submission->project_file_path || !\Illuminate\Support\Facades\Storage::disk('public')->exists($submission->project_file_path)) {
+            abort(404);
+        }
+
+        $path = \Illuminate\Support\Facades\Storage::disk('public')->path($submission->project_file_path);
+        
+        return response()->file($path, [
+            'Access-Control-Allow-Origin' => '*',
+            'Access-Control-Allow-Methods' => 'GET, OPTIONS',
+            'Access-Control-Allow-Headers' => 'Origin, Content-Type, Accept',
+            'Content-Type' => 'application/x.scratch.sb3',
+        ]);
+    }
 }

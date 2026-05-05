@@ -127,16 +127,7 @@
                     Data Nilai
                 </a>
 
-                <a href="{{ route('independent-tasks.index') }}"
-                    class="group flex items-center px-4 py-3.5 text-sm font-medium rounded-xl transition-all duration-200 
-                       {{ request()->routeIs('independent-tasks.*') 
-                            ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30' 
-                            : 'text-gray-600 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-gray-700/50 dark:hover:text-indigo-400' }}">
-                    <svg class="w-5 h-5 mr-3 {{ request()->routeIs('independent-tasks.*') ? 'text-white' : 'text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
-                    </svg>
-                    Bank Soal
-                </a>
+
                 @endif
 
             </nav>

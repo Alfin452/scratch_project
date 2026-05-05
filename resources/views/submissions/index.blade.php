@@ -93,14 +93,20 @@
                                     @else
                                     <span class="text-xs text-gray-400 italic">Belum ada jawaban</span>
                                     @endif
-                                @else
-                                @if($task->type === 'scratch')
+                                @elseif($task->type === 'scratch')
                                     @if($sub->project_file_path)
-                                    <a href="{{ route('submissions.download', $sub->id) }}"
-                                        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800 text-xs font-semibold hover:bg-indigo-100 dark:hover:bg-indigo-900/40 transition">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-                                        Download .sb3
-                                    </a>
+                                    <div class="flex flex-col gap-2">
+                                        <button type="button" onclick="openScratchModal()"
+                                            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800 text-xs font-semibold hover:bg-indigo-100 dark:hover:bg-indigo-900/40 transition">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                            Buka di Web
+                                        </button>
+                                        <a href="{{ route('submissions.download', $sub->id) }}"
+                                            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-50 dark:bg-gray-800/50 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-gray-700 text-xs font-semibold hover:bg-gray-100 dark:hover:bg-gray-700 transition">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                                            Download .sb3
+                                        </a>
+                                    </div>
                                     @else
                                     <span class="text-xs text-red-400 italic">File hilang</span>
                                     @endif
@@ -313,5 +319,48 @@
         function closeGradeModal() {
             document.getElementById('gradeModal').classList.add('hidden');
         }
+
+        // === MODAL SCRATCH ===
+        function openScratchModal() {
+            const iframe = document.getElementById('scratchIframe');
+            iframe.src = '{{ asset("scratch/index.html") }}';
+            document.getElementById('scratchModal').classList.remove('hidden');
+        }
+
+        function closeScratchModal() {
+            const iframe = document.getElementById('scratchIframe');
+            iframe.src = '';
+            document.getElementById('scratchModal').classList.add('hidden');
+        }
     </script>
+
+    {{-- ======================================================== --}}
+    {{-- MODAL: LIHAT PROJECT SCRATCH --}}
+    {{-- ======================================================== --}}
+    <div id="scratchModal" class="fixed inset-0 z-50 hidden overflow-y-auto" role="dialog" aria-modal="true">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="fixed inset-0 bg-gray-900/80 backdrop-blur-sm" onclick="closeScratchModal()"></div>
+            <div class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-4xl flex flex-col overflow-hidden border border-gray-200 dark:border-gray-700">
+                <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 flex items-center justify-center bg-indigo-100 dark:bg-indigo-900/40 rounded-xl text-indigo-700 dark:text-indigo-400">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path></svg>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-gray-800 dark:text-white">Preview Project Scratch</h3>
+                        </div>
+                    </div>
+                    <button onclick="closeScratchModal()" class="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-xl transition">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                </div>
+                <div class="p-0 bg-gray-100 dark:bg-gray-900 aspect-video w-full relative">
+                    <iframe id="scratchIframe" src="" class="w-full h-full border-0 absolute inset-0" allowfullscreen allowtransparency="true" scrolling="no"></iframe>
+                </div>
+                <div class="p-4 bg-gray-50 dark:bg-gray-800/50 text-xs text-gray-500 dark:text-gray-400 text-center border-t border-gray-200 dark:border-gray-700">
+                    Silakan unduh file <strong>.sb3</strong> dari siswa terlebih dahulu, kemudian buka di dalam editor ini melalui menu <strong>File > Load from your computer</strong>.
+                </div>
+            </div>
+        </div>
+    </div>
 </x-app-layout>

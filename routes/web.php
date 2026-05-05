@@ -53,6 +53,8 @@ Route::middleware('auth')->group(function () {
     Route::put('/submissions/{submission}/grade', [SubmissionController::class, 'grade'])->name('submissions.grade');
     Route::get('/submissions/{submission}/download', [SubmissionController::class, 'download'])
         ->name('submissions.download');
+    Route::get('/submissions/{submission}/stream-scratch', [SubmissionController::class, 'streamScratch'])
+        ->name('submissions.stream-scratch');
     Route::get('/gradebook', [SubmissionController::class, 'gradebook'])->name('submissions.gradebook');
 
     // Route Khusus Siswa
