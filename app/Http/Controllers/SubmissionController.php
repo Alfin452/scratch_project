@@ -58,8 +58,8 @@ class SubmissionController extends Controller
         $user = Auth::user();
         if (!$user->isTeacher()) abort(403);
 
-        // Ambil semua submission untuk task ini, beserta data user-nya
-        $submissions = Submission::with('user')
+        // Ambil semua submission untuk task ini, beserta data user dan kelasnya
+        $submissions = Submission::with('user.classroom')
             ->where('task_id', $task->id)
             ->latest()
             ->get();
@@ -122,6 +122,7 @@ class SubmissionController extends Controller
         // Urutkan dari yang terbesar (descending)
         // Ambil 50 besar saja biar tidak berat
         $students = \App\Models\User::where('role', 'student')
+            ->with('classroom')
             ->withSum('submissions', 'score')
             ->orderByDesc('submissions_sum_score')
             ->take(50)

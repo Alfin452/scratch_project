@@ -42,6 +42,60 @@
         }
     }">
 
+    @if(Auth::user() && Auth::user()->isStudent() && is_null(Auth::user()->classroom_id))
+    @php
+        $classrooms = \App\Models\Classroom::orderBy('name')->get();
+    @endphp
+    {{-- PERSISTENT BACKDROP MODAL --}}
+    <div class="fixed inset-0 z-[9999] overflow-y-auto flex items-center justify-center p-4 bg-gray-950/75 backdrop-blur-md" x-cloak>
+        <div class="relative bg-white/95 dark:bg-gray-800/95 backdrop-blur-2xl rounded-3xl shadow-2xl w-full max-w-md border border-white/20 dark:border-gray-700/30 overflow-hidden p-8 transform scale-100 transition-all duration-300">
+            
+            {{-- Header --}}
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-indigo-50 dark:bg-indigo-950/50 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-indigo-100 dark:border-indigo-900/50 shadow-md">
+                    <span class="text-3xl animate-bounce">🎓</span>
+                </div>
+                <h3 class="text-2xl font-black text-gray-900 dark:text-white">Pilih Kelas Belajar Anda</h3>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mt-2 leading-relaxed">
+                    Sebelum melanjutkan ke modul pembelajaran dan pengerjaan tugas, silakan pilih kelas Anda terlebih dahulu agar progres belajar Anda terpantau oleh Guru.
+                </p>
+            </div>
+
+            {{-- Form --}}
+            <form action="{{ route('student.select-class') }}" method="POST" class="space-y-4">
+                @csrf
+                <div>
+                    <label for="classroom_id" class="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">Pilih Kelas <span class="text-red-500">*</span></label>
+                    <select name="classroom_id" id="classroom_id" required
+                        class="w-full rounded-2xl border-gray-200 dark:border-gray-700 dark:bg-gray-900/50 dark:text-white focus:border-indigo-500 focus:ring-indigo-500/20 text-sm py-3.5 px-4 shadow-sm">
+                        <option value="" disabled selected>-- Pilih Kelas Anda --</option>
+                        @foreach($classrooms as $classroom)
+                            <option value="{{ $classroom->id }}">{{ $classroom->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                
+                <button type="submit" class="w-full py-4 px-5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-bold shadow-lg shadow-indigo-600/20 hover:shadow-indigo-600/30 transition transform active:scale-95 duration-200 text-sm flex items-center justify-center gap-2 mt-4">
+                    <span>Konfirmasi Kelas</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                </button>
+            </form>
+
+            <div class="text-center mt-6">
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="text-xs font-bold text-red-500 hover:text-red-600 hover:underline flex items-center justify-center gap-1 mx-auto">
+                        🚪 Log Out dari Akun
+                    </button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+    @endif
+
     <nav class="sticky top-0 z-50 w-full bg-white/80 dark:bg-gray-800/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-700 transition-colors duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-20">

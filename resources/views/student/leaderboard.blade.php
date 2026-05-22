@@ -30,6 +30,7 @@
                         </div>
                     </div>
                     <div class="text-sm font-bold text-gray-700 dark:text-gray-200 text-center max-w-[80px] truncate">{{ $students[1]->name }}</div>
+                    <div class="text-[10px] text-gray-400 dark:text-gray-500 text-center max-w-[80px] truncate mb-0.5 uppercase font-bold tracking-wide">{{ $students[1]->classroom->name ?? 'Tanpa Kelas' }}</div>
                     <div class="text-xs text-gray-500 dark:text-gray-400 font-bold mb-2">{{ $students[1]->submissions_sum_score ?? 0 }} XP</div>
                     <div class="w-20 md:w-24 h-24 md:h-32 bg-gradient-to-t from-gray-300 to-gray-200 dark:from-gray-700 dark:to-gray-600 rounded-t-xl flex items-end justify-center pb-4 shadow-inner">
                         <span class="text-4xl font-black text-gray-400/50 dark:text-gray-800/50">2</span>
@@ -50,6 +51,7 @@
                         </div>
                     </div>
                     <div class="text-base font-bold text-gray-900 dark:text-white text-center max-w-[100px] truncate">{{ $students[0]->name }}</div>
+                    <div class="text-[10px] text-yellow-600/80 dark:text-yellow-400/80 text-center max-w-[100px] truncate mb-0.5 uppercase font-bold tracking-wide">{{ $students[0]->classroom->name ?? 'Tanpa Kelas' }}</div>
                     <div class="text-sm text-yellow-600 dark:text-yellow-400 font-extrabold mb-2">{{ $students[0]->submissions_sum_score ?? 0 }} XP</div>
                     <div class="w-24 md:w-28 h-32 md:h-40 bg-gradient-to-t from-yellow-400 to-yellow-300 rounded-t-xl flex items-end justify-center pb-4 shadow-lg shadow-yellow-400/20">
                         <span class="text-5xl font-black text-white/50">1</span>
@@ -69,6 +71,7 @@
                         </div>
                     </div>
                     <div class="text-sm font-bold text-gray-700 dark:text-gray-200 text-center max-w-[80px] truncate">{{ $students[2]->name }}</div>
+                    <div class="text-[10px] text-gray-400 dark:text-gray-500 text-center max-w-[80px] truncate mb-0.5 uppercase font-bold tracking-wide">{{ $students[2]->classroom->name ?? 'Tanpa Kelas' }}</div>
                     <div class="text-xs text-gray-500 dark:text-gray-400 font-bold mb-2">{{ $students[2]->submissions_sum_score ?? 0 }} XP</div>
                     <div class="w-20 md:w-24 h-16 md:h-24 bg-gradient-to-t from-orange-300 to-orange-200 dark:from-orange-700 dark:to-orange-600 rounded-t-xl flex items-end justify-center pb-4 shadow-inner">
                         <span class="text-4xl font-black text-orange-100/50 dark:text-orange-900/50">3</span>
@@ -86,6 +89,7 @@
                             <tr>
                                 <th class="px-6 py-4 text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Peringkat</th>
                                 <th class="px-6 py-4 text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Siswa</th>
+                                <th class="px-6 py-4 text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Kelas</th>
                                 <th class="px-6 py-4 text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider text-right">Total XP</th>
                             </tr>
                         </thead>
@@ -118,6 +122,11 @@
                                             <span class="text-xs text-gray-400 dark:text-gray-500">Siswa Level 1</span>
                                         </div>
                                     </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-semibold uppercase tracking-wider {{ $student->classroom ? 'bg-indigo-50 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400' : 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400' }}">
+                                        {{ $student->classroom->name ?? 'Tanpa Kelas' }}
+                                    </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right">
                                     <span class="text-sm font-extrabold text-indigo-600 dark:text-indigo-400">{{ number_format($student->submissions_sum_score ?? 0) }} XP</span>

@@ -23,6 +23,7 @@ class User extends Authenticatable
         'google_id', // Tambahan untuk Socialite
         'avatar',    // Tambahan untuk foto profil Google
         'role',      // 'teacher' atau 'student'
+        'classroom_id', // Tambahan untuk kelas siswa
     ];
 
     /**
@@ -68,6 +69,14 @@ class User extends Authenticatable
     public function isStudent()
     {
         return $this->role === 'student';
+    }
+
+    /**
+     * Hubungan ke kelas siswa (Classroom).
+     */
+    public function classroom()
+    {
+        return $this->belongsTo(Classroom::class, 'classroom_id');
     }
     
 }

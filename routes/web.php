@@ -9,6 +9,8 @@ use App\Http\Controllers\SubmissionController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Auth\SocialiteController;
 use App\Http\Controllers\IndependentTaskController;
+use App\Http\Controllers\ClassroomController;
+
 
 
 Route::get('/', function () {
@@ -64,6 +66,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/student/leaderboard', [App\Http\Controllers\SubmissionController::class, 'leaderboard'])->name('student.leaderboard');
 
     Route::resource('independent-tasks', IndependentTaskController::class)->except(['show', 'edit', 'update']);
+
+    // Master Kelas & Pemilihan Kelas
+    Route::resource('classrooms', ClassroomController::class)->except(['show', 'create', 'edit']);
+    Route::post('/student/select-class', [DashboardController::class, 'selectClass'])->name('student.select-class');
     });
 
 require __DIR__.'/auth.php';

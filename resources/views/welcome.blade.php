@@ -36,6 +36,8 @@
 <body class="font-sans antialiased bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 overflow-x-hidden"
     x-data="{ 
           mobileMenuOpen: false,
+          authModalOpen: {{ $errors->any() ? 'true' : 'false' }},
+          authMode: '{{ $errors->has('name') || $errors->has('password_confirmation') ? 'register' : 'login' }}',
           darkMode: localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches),
           toggleTheme() {
               this.darkMode = !this.darkMode;
@@ -84,15 +86,12 @@
                             @auth
                             <a href="{{ url('/dashboard') }}" class="px-5 py-2.5 text-sm font-semibold text-white bg-indigo-600 rounded-full hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-600/20 hover:shadow-indigo-600/40">Dashboard</a>
                             @else
-                            <a href="{{ route('auth.google') }}" class="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-gray-700 bg-white border border-gray-200 rounded-full hover:bg-gray-50 dark:bg-gray-800 dark:text-white dark:border-gray-700 dark:hover:bg-gray-700 transition-all shadow-sm hover:shadow-md">
-                                <svg class="w-5 h-5" viewBox="0 0 24 24">
-                                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
-                                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
-                                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
-                                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
+                            <button @click="authModalOpen = true; authMode = 'login'" class="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-gray-700 bg-white border border-gray-200 rounded-full hover:bg-gray-50 dark:bg-gray-800 dark:text-white dark:border-gray-700 dark:hover:bg-gray-700 transition-all shadow-sm hover:shadow-md">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h3a3 3 0 013 3v1" />
                                 </svg>
-                                <span>Masuk dengan Google</span>
-                            </a>
+                                <span>Masuk / Daftar</span>
+                            </button>
                             @endauth
                         </div>
                     </div>
@@ -124,15 +123,9 @@
             @auth
             <a href="{{ url('/dashboard') }}" class="block w-full text-center px-4 py-2 text-white bg-indigo-600 rounded-lg">Dashboard</a>
             @else
-            <a href="{{ route('login') }}" class="flex items-center justify-center gap-2 w-full px-4 py-2 text-gray-700 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:text-white dark:border-gray-600">
-                <svg class="w-5 h-5" viewBox="0 0 24 24">
-                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
-                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
-                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
-                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
-                </svg>
-                Masuk dengan Google
-            </a>
+            <button @click="authModalOpen = true; authMode = 'login'; mobileMenuOpen = false" class="flex items-center justify-center gap-2 w-full px-4 py-2 text-gray-700 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:text-white dark:border-gray-600 font-bold text-sm">
+                Masuk / Daftar
+            </button>
             @endauth
         </div>
     </nav>
@@ -163,12 +156,12 @@
                     </p>
 
                     <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start hero-cta opacity-0 translate-y-8">
-                        <a href="{{ route('auth.google') }}" class="px-8 py-4 text-base font-bold text-white bg-indigo-600 rounded-2xl shadow-xl shadow-indigo-600/30 hover:scale-105 hover:bg-indigo-700 transition-all duration-300 flex items-center justify-center gap-2">
+                        <button @click="authModalOpen = true; authMode = 'register'" class="px-8 py-4 text-base font-bold text-white bg-indigo-600 rounded-2xl shadow-xl shadow-indigo-600/30 hover:scale-105 hover:bg-indigo-700 transition-all duration-300 flex items-center justify-center gap-2">
                             <span>Mulai Sekarang</span>
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
                             </svg>
-                        </a>
+                        </button>
                         <a href="#features" class="px-8 py-4 text-base font-bold text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-300 flex items-center justify-center gap-2 group">
                             <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
@@ -342,6 +335,136 @@
             </div>
         </div>
     </footer>
+
+    {{-- ======================================================== --}}
+    {{-- MODAL: MASUK / DAFTAR SISWA --}}
+    {{-- ======================================================== --}}
+    <div x-show="authModalOpen" x-transition.opacity class="fixed inset-0 z-50 overflow-y-auto" role="dialog" aria-modal="true" style="display: none;" x-cloak>
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="fixed inset-0 bg-gray-950/65 backdrop-blur-md" @click="authModalOpen = false"></div>
+            
+            <div class="relative bg-white/95 dark:bg-gray-800/95 backdrop-blur-2xl rounded-3xl shadow-2xl w-full max-w-md border border-white/20 dark:border-gray-700/30 overflow-hidden transform transition-all p-8">
+                
+                {{-- Close Button --}}
+                <button @click="authModalOpen = false" class="absolute top-5 right-5 w-8 h-8 flex items-center justify-center rounded-full text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+
+                {{-- Header --}}
+                <div class="text-center mb-6">
+                    <div class="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-indigo-600/25">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-black text-gray-900 dark:text-white" x-text="authMode === 'login' ? 'Selamat Datang Kembali' : 'Buat Akun Baru'"></h3>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1.5" x-text="authMode === 'login' ? 'Silakan masuk ke akun AlgoLearn Anda' : 'Daftarkan akun belajar Anda secara gratis'"></p>
+                </div>
+
+                {{-- Display Laravel Session Error --}}
+                @if ($errors->any())
+                <div class="mb-5 p-3.5 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/50 rounded-2xl text-xs text-red-600 dark:text-red-400">
+                    <ul class="list-disc pl-4 space-y-1 font-semibold">
+                        @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+                @endif
+
+                {{-- Google Login Button --}}
+                <a href="{{ route('auth.google') }}" class="flex items-center justify-center gap-3 w-full px-5 py-3.5 bg-white dark:bg-gray-700 text-gray-700 dark:text-white border border-gray-200 dark:border-gray-600 rounded-2xl shadow-sm hover:shadow-md hover:bg-gray-50 dark:hover:bg-gray-600/80 transition-all font-bold text-sm">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24">
+                        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
+                        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
+                        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
+                        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
+                    </svg>
+                    <span x-text="authMode === 'login' ? 'Masuk dengan Google' : 'Daftar dengan Google'"></span>
+                </a>
+
+                {{-- Divider --}}
+                <div class="relative flex py-4 items-center">
+                    <div class="flex-grow border-t border-gray-200 dark:border-gray-700"></div>
+                    <span class="flex-shrink mx-4 text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">atau</span>
+                    <div class="flex-grow border-t border-gray-200 dark:border-gray-700"></div>
+                </div>
+
+                {{-- LOGIN FORM --}}
+                <div x-show="authMode === 'login'">
+                    <form action="{{ route('login') }}" method="POST" class="space-y-4">
+                        @csrf
+                        <div>
+                            <label for="login_email" class="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1.5">Alamat Email</label>
+                            <input type="email" name="email" id="login_email" required
+                                class="w-full rounded-2xl border-gray-200 dark:border-gray-700 dark:bg-gray-900/50 dark:text-white focus:border-indigo-500 focus:ring-indigo-500/20 text-sm py-3 px-4 shadow-sm"
+                                placeholder="nama@email.com">
+                        </div>
+                        <div>
+                            <div class="flex justify-between items-center mb-1.5">
+                                <label for="login_password" class="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Kata Sandi</label>
+                            </div>
+                            <input type="password" name="password" id="login_password" required
+                                class="w-full rounded-2xl border-gray-200 dark:border-gray-700 dark:bg-gray-900/50 dark:text-white focus:border-indigo-500 focus:ring-indigo-500/20 text-sm py-3 px-4 shadow-sm"
+                                placeholder="••••••••">
+                        </div>
+                        <button type="submit" class="w-full py-3.5 px-5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-bold shadow-lg shadow-indigo-600/20 hover:shadow-indigo-600/30 transition transform active:scale-95 duration-200 text-sm mt-2">
+                            Masuk Akun
+                        </button>
+                    </form>
+                    
+                    {{-- Switch --}}
+                    <div class="text-center mt-6 text-sm text-gray-500 dark:text-gray-400">
+                        Belum memiliki akun?
+                        <button @click="authMode = 'register'" class="font-bold text-indigo-600 dark:text-indigo-400 hover:underline">Daftar Sekarang</button>
+                    </div>
+                </div>
+
+                {{-- REGISTER FORM --}}
+                <div x-show="authMode === 'register'">
+                    <form action="{{ route('register') }}" method="POST" class="space-y-3">
+                        @csrf
+                        <div>
+                            <label for="reg_name" class="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1.5">Nama Lengkap</label>
+                            <input type="text" name="name" id="reg_name" required
+                                class="w-full rounded-2xl border-gray-200 dark:border-gray-700 dark:bg-gray-900/50 dark:text-white focus:border-indigo-500 focus:ring-indigo-500/20 text-sm py-2.5 px-4 shadow-sm"
+                                placeholder="Nama Lengkap Anda">
+                        </div>
+                        <div>
+                            <label for="reg_email" class="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1.5">Alamat Email</label>
+                            <input type="email" name="email" id="reg_email" required
+                                class="w-full rounded-2xl border-gray-200 dark:border-gray-700 dark:bg-gray-900/50 dark:text-white focus:border-indigo-500 focus:ring-indigo-500/20 text-sm py-2.5 px-4 shadow-sm"
+                                placeholder="nama@email.com">
+                        </div>
+                        <div>
+                            <label for="reg_password" class="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1.5">Kata Sandi</label>
+                            <input type="password" name="password" id="reg_password" required
+                                class="w-full rounded-2xl border-gray-200 dark:border-gray-700 dark:bg-gray-900/50 dark:text-white focus:border-indigo-500 focus:ring-indigo-500/20 text-sm py-2.5 px-4 shadow-sm"
+                                placeholder="Minimal 8 karakter">
+                        </div>
+                        <div>
+                            <label for="reg_password_confirmation" class="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1.5">Konfirmasi Kata Sandi</label>
+                            <input type="password" name="password_confirmation" id="reg_password_confirmation" required
+                                class="w-full rounded-2xl border-gray-200 dark:border-gray-700 dark:bg-gray-900/50 dark:text-white focus:border-indigo-500 focus:ring-indigo-500/20 text-sm py-2.5 px-4 shadow-sm"
+                                placeholder="Ketik ulang kata sandi">
+                        </div>
+                        <button type="submit" class="w-full py-3.5 px-5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-bold shadow-lg shadow-indigo-600/20 hover:shadow-indigo-600/30 transition transform active:scale-95 duration-200 text-sm mt-2">
+                            Daftar Akun Baru
+                        </button>
+                    </form>
+                    
+                    {{-- Switch --}}
+                    <div class="text-center mt-5 text-sm text-gray-500 dark:text-gray-400">
+                        Sudah memiliki akun?
+                        <button @click="authMode = 'login'" class="font-bold text-indigo-600 dark:text-indigo-400 hover:underline">Masuk di sini</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
 
     <script>
         gsap.registerPlugin(ScrollTrigger);

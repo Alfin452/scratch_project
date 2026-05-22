@@ -160,4 +160,31 @@ class DashboardController extends Controller
             'nextModuleToLearn'
         ));
     }
+
+    /**
+     * Menyimpan kelas pilihan siswa.
+     */
+    public function selectClass(Request $request)
+    {
+        $request->validate([
+            'classroom_id' => 'required|exists:classrooms,id',
+        ], [
+            'classroom_id.required' => 'Silakan pilih kelas Anda terlebih dahulu.',
+            'classroom_id.exists' => 'Kelas yang dipilih tidak valid.',
+        ]);
+
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        
+        if (!$user->isStudent()) {
+            abort(403, 'Hanya siswa yang dapat memilih kelas.');
+        }
+
+        $user->update([
+            'classroom_id' => $request->classroom_id,
+        ]);
+
+        return back()->with('success', 'Kelas berhasil dipilih, selamat belajar!');
+    }
 }
+

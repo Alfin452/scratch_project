@@ -67,7 +67,12 @@
                                     </div>
                                     <div>
                                         <p class="font-semibold text-gray-800 dark:text-white">{{ $sub->user->name }}</p>
-                                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ $sub->user->email }}</p>
+                                        <div class="flex items-center gap-1.5 mt-0.5 flex-wrap">
+                                            <span class="text-xs text-gray-500 dark:text-gray-400">{{ $sub->user->email }}</span>
+                                            <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-extrabold tracking-wide uppercase {{ $sub->user->classroom ? 'bg-indigo-100 text-indigo-800 dark:bg-indigo-950/50 dark:text-indigo-300' : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300' }}">
+                                                {{ $sub->user->classroom->name ?? 'Tanpa Kelas' }}
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
                             </td>
