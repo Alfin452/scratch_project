@@ -34,7 +34,8 @@ class SubmissionController extends Controller
 
             $submission->update([
                 'project_file_path' => $path,
-                'status' => 'submitted', // Reset status jika sebelumnya sudah dinilai
+                'status' => 'graded',
+                'score' => 100,
             ]);
         } else {
             // Buat submission baru
@@ -42,7 +43,8 @@ class SubmissionController extends Controller
                 'user_id' => $user->id,
                 'task_id' => $task->id,
                 'project_file_path' => $path,
-                'status' => 'submitted',
+                'status' => 'graded',
+                'score' => 100,
             ]);
         }
 
@@ -58,9 +60,10 @@ class SubmissionController extends Controller
         $user = Auth::user();
         if (!$user->isTeacher()) abort(403);
 
-        // Ambil semua submission untuk task ini, beserta data user dan kelasnya
+        // Ambil semua submission untuk task ini, beserta data user dan kelasnya, urutkan dari nilai tertinggi ke terendah
         $submissions = Submission::with('user.classroom')
             ->where('task_id', $task->id)
+            ->orderByDesc('score')
             ->latest()
             ->get();
 

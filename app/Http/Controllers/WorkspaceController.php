@@ -115,9 +115,10 @@ class WorkspaceController extends Controller
                 $answerData = json_decode($answerData, true);
             }
 
-            // Auto-Scoring untuk Classification
-            $score = null;
-            $status = 'submitted';
+            // Auto-Scoring untuk berbagai tipe kuis
+            $score = 0;
+            $status = 'graded';
+            
             if ($task->type === 'classification') {
                 $correctCount = 0;
                 $questions = $task->content['questions'] ?? [];
@@ -130,7 +131,6 @@ class WorkspaceController extends Controller
                         }
                     }
                     $score = round(($correctCount / $totalQuestions) * 100);
-                    $status = 'graded'; // Langsung nilai
                 }
             } elseif ($task->type === 'multiple_choice') {
                 $correctCount = 0;
@@ -139,19 +139,64 @@ class WorkspaceController extends Controller
                 
                 if ($totalQuestions > 0 && is_array($answerData)) {
                     foreach ($questions as $index => $q) {
-                        // answerData[$index] will store the chosen option index.
-                        // $q['correct_option'] holds the correct option index.
                         if (isset($answerData[$index]) && (int)$answerData[$index] === (int)$q['correct_option']) {
                             $correctCount++;
                         }
                     }
                     $score = round(($correctCount / $totalQuestions) * 100);
-                    $status = 'graded';
                 }
             } elseif ($task->type === 'simulation') {
-                // Untuk simulasi, jika sudah dikirim berarti dianggap selesai 100
                 $score = 100;
-                $status = 'graded';
+            } elseif ($task->type === 'drag_and_drop') {
+                $totalActivities = count($answerData ?? []);
+                $correctActivities = 0;
+                $taskActivities = $task->content['activities'] ?? [];
+                
+                if ($totalActivities > 0 && is_array($answerData)) {
+                    foreach ($answerData as $key => $userAct) {
+                        $matchedAct = collect($taskActivities)->firstWhere('name', $userAct['name'] ?? '');
+                        $isCorrect = false;
+                        if ($matchedAct) {
+                            $userSteps = $userAct['answer'] ?? [];
+                            $correctSteps = $matchedAct['steps'] ?? [];
+                            
+                            $isCorrect = count($userSteps) === count($correctSteps);
+                            if ($isCorrect) {
+                                foreach ($correctSteps as $idx => $stepText) {
+                                    if (!isset($userSteps[$idx]) || $userSteps[$idx] !== $stepText) {
+                                        $isCorrect = false;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        $answerData[$key]['correct'] = $isCorrect;
+                        if ($isCorrect) {
+                            $correctActivities++;
+                        }
+                    }
+                    $score = round(($correctActivities / $totalActivities) * 100);
+                }
+            } elseif ($task->type === 'decomposition') {
+                $focusName = $answerData['focus']['name'] ?? '';
+                $userAlgorithm = $answerData['focus']['algorithm'] ?? [];
+                $taskActivities = $task->content['activities'] ?? [];
+                $matchedAct = collect($taskActivities)->firstWhere('name', $focusName);
+                
+                if ($matchedAct) {
+                    $correctSteps = $matchedAct['steps'] ?? [];
+                    
+                    $isCorrect = count($userAlgorithm) === count($correctSteps);
+                    if ($isCorrect) {
+                        foreach ($correctSteps as $idx => $stepText) {
+                            if (!isset($userAlgorithm[$idx]) || $userAlgorithm[$idx] !== $stepText) {
+                                $isCorrect = false;
+                                break;
+                            }
+                        }
+                    }
+                    $score = $isCorrect ? 100 : 0;
+                }
             }
 
             $submission = Submission::updateOrCreate(
@@ -185,14 +230,16 @@ class WorkspaceController extends Controller
 
             $submission->update([
                 'project_file_path' => $path,
-                'status'            => 'submitted',
+                'status'            => 'graded',
+                'score'             => 100,
             ]);
         } else {
             \App\Models\Submission::create([
                 'user_id'           => \Illuminate\Support\Facades\Auth::id(),
                 'task_id'           => $task->id,
                 'project_file_path' => $path,
-                'status'            => 'submitted',
+                'status'            => 'graded',
+                'score'             => 100,
             ]);
         }
 

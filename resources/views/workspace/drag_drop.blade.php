@@ -98,6 +98,31 @@
         .badge-pop { animation: badge-pop 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
 
         .dark body { background: #0f172a; }
+
+        /* Perbesar dan perjelas foto di deskripsi/instruksi kuis */
+        .prose figure.image, figure.image {
+            display: block !important;
+            margin-bottom: 2rem !important;
+            margin-top: 2rem !important;
+            max-width: 100% !important;
+            width: 100% !important;
+            text-align: center !important;
+        }
+        .prose figure.image img, figure.image img, .prose img, .leading-relaxed img, .instruction-content img {
+            max-width: 90% !important;
+            width: auto !important;
+            height: auto !important;
+            max-height: 550px !important;
+            object-fit: contain !important;
+            margin: 0 auto !important;
+            display: block !important;
+            border-radius: 1.5rem !important;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+        .prose figure.image img:hover, figure.image img:hover, .prose img:hover, .leading-relaxed img:hover, .instruction-content img:hover {
+            transform: scale(1.03) !important;
+        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 min-h-screen text-gray-800 dark:text-gray-200">
@@ -120,8 +145,8 @@
 
             {{-- Title --}}
             <div class="flex-1 min-w-0">
-                <h1 class="text-sm sm:text-base font-extrabold text-gray-900 dark:text-white truncate leading-tight">{{ $task->title }}</h1>
-                <p class="text-xs text-gray-400 dark:text-gray-500 truncate">{{ $task->instruction }}</p>
+                <h1 class="text-base sm:text-lg font-black text-gray-900 dark:text-white leading-tight">{{ $task->title }}</h1>
+                <p class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1 leading-relaxed">{{ $task->instruction }}</p>
             </div>
 
             {{-- Step Progress --}}

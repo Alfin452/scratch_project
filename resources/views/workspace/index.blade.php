@@ -48,6 +48,31 @@
             background-color: rgba(156, 163, 175, 0.5);
             border-radius: 20px;
         }
+
+        /* Perbesar dan perjelas foto di deskripsi/instruksi kuis */
+        .prose figure.image, figure.image {
+            display: block !important;
+            margin-bottom: 2rem !important;
+            margin-top: 2rem !important;
+            max-width: 100% !important;
+            width: 100% !important;
+            text-align: center !important;
+        }
+        .prose figure.image img, figure.image img, .prose img, .leading-relaxed img, .instruction-content img {
+            max-width: 90% !important;
+            width: auto !important;
+            height: auto !important;
+            max-height: 550px !important;
+            object-fit: contain !important;
+            margin: 0 auto !important;
+            display: block !important;
+            border-radius: 1.5rem !important;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+        .prose figure.image img:hover, figure.image img:hover, .prose img:hover, .leading-relaxed img:hover, .instruction-content img:hover {
+            transform: scale(1.03) !important;
+        }
     </style>
 </head>
 

@@ -18,6 +18,31 @@
         .animate-scaleIn { animation: scaleIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes scaleIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+
+        /* Perbesar dan perjelas foto di deskripsi/instruksi kuis */
+        .prose figure.image, figure.image {
+            display: block !important;
+            margin-bottom: 2rem !important;
+            margin-top: 2rem !important;
+            max-width: 100% !important;
+            width: 100% !important;
+            text-align: center !important;
+        }
+        .prose figure.image img, figure.image img, .prose img, .leading-relaxed img, .instruction-content img {
+            max-width: 90% !important;
+            width: auto !important;
+            height: auto !important;
+            max-height: 550px !important;
+            object-fit: contain !important;
+            margin: 0 auto !important;
+            display: block !important;
+            border-radius: 1.5rem !important;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+        .prose figure.image img:hover, figure.image img:hover, .prose img:hover, .leading-relaxed img:hover, .instruction-content img:hover {
+            transform: scale(1.03) !important;
+        }
     </style>
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-200 antialiased min-h-screen flex flex-col transition-colors duration-300">

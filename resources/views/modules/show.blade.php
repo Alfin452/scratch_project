@@ -333,9 +333,10 @@
 
     {{-- Script GSAP untuk Siswa & Reading Timer --}}
     @php
-        $wordCount = str_word_count(strip_tags($module->content));
-        // Hitung target detik: 150 kata per menit. Minimal 60 detik mutlak.
-        $readingTimeSeconds = max(60, ceil(($wordCount / 150) * 60));
+        $moduleContent = $module->content ?? '';
+        $wordCount = str_word_count(strip_tags($moduleContent));
+        // Hitung target detik: 30 kata per menit (sangat lambat/teliti). Minimal 300 detik (5 menit) mutlak.
+        $readingTimeSeconds = max(300, ceil(($wordCount / 30) * 60));
     @endphp
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>

@@ -32,7 +32,13 @@
                 </ol>
             </nav>
 
-            <div class="flex flex-col lg:flex-row gap-8 justify-center" x-data="readingTimer(15)" x-init="startTimer()">
+            @php
+                $wordCount = str_word_count(strip_tags($subModule->content));
+                // Hitung target detik: 30 kata per menit (sangat lambat/teliti). Minimal 300 detik (5 menit) mutlak.
+                $readingTimeSeconds = max(300, ceil(($wordCount / 30) * 60));
+            @endphp
+
+            <div class="flex flex-col lg:flex-row gap-8 justify-center" x-data="readingTimer({{ $readingTimeSeconds }})" x-init="startTimer()">
 
                 {{-- KONTEN UTAMA --}}
                 <div class="w-full lg:w-3/4 space-y-8">
@@ -46,7 +52,7 @@
                         {{-- Header Materi --}}
                         <div class="relative p-8 md:p-10 border-b border-gray-100 dark:border-gray-700">
                             <span class="inline-flex items-center px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300 text-xs font-bold tracking-wide uppercase mb-4">
-                                MATERI {{ $subModule->order }}
+                                MATERI BACAAN
                             </span>
                             <h1 class="text-3xl md:text-4xl font-extrabold text-gray-900 dark:text-white leading-tight relative z-10">
                                 {{ $subModule->title }}
@@ -85,7 +91,7 @@
                                     :class="canProceed ? 'bg-emerald-500 hover:bg-emerald-600' : 'bg-gray-400 cursor-not-allowed'"
                                     class="inline-flex items-center px-8 py-3 text-white font-bold rounded-xl shadow-lg hover:shadow-emerald-500/30 transition-all transform w-full md:w-auto justify-center">
                                     
-                                    <span x-show="!canProceed" x-text="`Selesaikan membaca (${timeLapse}s)`"></span>
+                                    <span x-show="!canProceed" x-text="`Selesaikan membaca (${Math.floor(timeLapse / 60).toString().padStart(2, '0')}:${(timeLapse % 60).toString().padStart(2, '0')})`"></span>
 
                                     <div x-show="canProceed" class="flex items-center">
                                         <svg id="btn-spinner" class="w-5 h-5 mr-2 animate-spin hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
@@ -109,15 +115,33 @@
         });
 
         function readingTimer(duration) {
+            const subModuleId = {{ $subModule->id }};
+            const storageKey = `read_timer_submodule_${subModuleId}`;
+            
+            let savedTime = localStorage.getItem(storageKey);
+            let timeRemaining = savedTime !== null ? parseInt(savedTime) : duration;
+            
+            if (timeRemaining <= 0) {
+                timeRemaining = 0;
+            }
+
             return {
-                timeLapse: duration,
-                canProceed: false,
+                timeLapse: timeRemaining,
+                canProceed: timeRemaining <= 0,
                 startTimer() {
+                    if (this.timeLapse <= 0) {
+                        this.canProceed = true;
+                        localStorage.setItem(storageKey, 0);
+                        return;
+                    }
+                    
                     let interval = setInterval(() => {
                         if (this.timeLapse > 0) {
                             this.timeLapse--;
+                            localStorage.setItem(storageKey, this.timeLapse);
                         } else {
                             this.canProceed = true;
+                            localStorage.setItem(storageKey, 0);
                             clearInterval(interval);
                         }
                     }, 1000);
@@ -142,9 +166,11 @@
                         body: JSON.stringify({})
                     }).then(response => response.json())
                     .then(data => {
+                        localStorage.removeItem(storageKey);
                         window.location.href = nextUrl;
                     }).catch(error => {
                         console.error('Error:', error);
+                        localStorage.removeItem(storageKey);
                         window.location.href = nextUrl; // Tetap lanjut walau error biar tidak blocking UX
                     });
                 }
