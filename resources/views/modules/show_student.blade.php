@@ -120,7 +120,7 @@
                                                     @elseif($status === 'available') text-indigo-500
                                                     @else text-gray-500
                                                     @endif">
-                                                    {{ $item->item_type == 'submodule' ? 'Materi Bacaan' : 'Tugas Praktik' }}
+                                                    {{ $item->item_type == 'submodule' ? 'Materi' : 'Tugas Praktik' }}
                                                 </span>
                                                 @if($status === 'available')
                                                     <span class="px-2 py-0.5 bg-indigo-100 text-indigo-700 dark:bg-indigo-900/60 dark:text-indigo-300 text-[10px] rounded-md font-bold animate-pulse">BERIKUTNYA</span>

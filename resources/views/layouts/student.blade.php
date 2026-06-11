@@ -155,12 +155,7 @@
                             Materi
                         </x-nav-link>
 
-                        <x-nav-link :href="route('student.tasks')" :active="request()->routeIs('student.tasks')" class="rounded-full px-4 py-2 text-sm font-medium transition-all duration-200 {{ request()->routeIs('student.tasks') ? 'bg-indigo-50 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300' : 'text-gray-500 hover:text-indigo-600 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-700/50' }}">
-                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
-                            </svg>
-                            Tugas
-                        </x-nav-link>
+
 
                         <x-nav-link :href="route('student.activity')" :active="request()->routeIs('student.activity')" class="rounded-full px-4 py-2 text-sm font-medium transition-all duration-200 {{ request()->routeIs('student.activity') ? 'bg-indigo-50 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300' : 'text-gray-500 hover:text-indigo-600 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-700/50' }}">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -258,9 +253,7 @@
                 <x-responsive-nav-link :href="route('modules.index')" :active="request()->routeIs('modules.*')" class="rounded-lg">
                     Materi
                 </x-responsive-nav-link>
-                <x-responsive-nav-link :href="route('student.tasks')" :active="request()->routeIs('student.tasks')" class="rounded-lg">
-                    Tugas
-                </x-responsive-nav-link>
+
                 <x-responsive-nav-link :href="route('student.activity')" :active="request()->routeIs('student.activity')" class="rounded-lg">
                     Aktivitas
                 </x-responsive-nav-link>

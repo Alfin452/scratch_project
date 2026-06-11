@@ -73,7 +73,7 @@
                                             <div>
                                                 <div class="flex items-center gap-2 mb-1">
                                                     <span class="text-xs font-black uppercase tracking-wider {{ $item->item_type == 'submodule' ? 'text-emerald-500' : 'text-indigo-500' }}">
-                                                        {{ $item->item_type == 'submodule' ? 'Materi Bacaan' : 'Tugas Praktik' }}
+                                                        {{ $item->item_type == 'submodule' ? 'Materi' : 'Tugas Praktik' }}
                                                     </span>
 
                                                 </div>

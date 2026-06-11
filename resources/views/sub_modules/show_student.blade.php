@@ -52,7 +52,7 @@
                         {{-- Header Materi --}}
                         <div class="relative p-8 md:p-10 border-b border-gray-100 dark:border-gray-700">
                             <span class="inline-flex items-center px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300 text-xs font-bold tracking-wide uppercase mb-4">
-                                MATERI BACAAN
+                                MATERI
                             </span>
                             <h1 class="text-3xl md:text-4xl font-extrabold text-gray-900 dark:text-white leading-tight relative z-10">
                                 {{ $subModule->title }}

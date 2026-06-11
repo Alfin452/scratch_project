@@ -138,7 +138,39 @@
                     Master Data Kelas
                 </a>
 
+                <div class="mt-8 mb-2 px-4 text-xs font-bold tracking-wider text-gray-400 uppercase dark:text-gray-500">
+                    Manajemen Siswa
+                </div>
 
+                <div x-data="{ openMenu: {{ request()->routeIs('teacher.students.*') ? 'true' : 'false' }} }" class="space-y-1">
+                    <button @click="openMenu = !openMenu" 
+                        class="w-full group flex items-center justify-between px-4 py-3.5 text-sm font-medium rounded-xl transition-all duration-200 text-gray-600 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-gray-700/50 dark:hover:text-indigo-400">
+                        <div class="flex items-center">
+                            <svg class="w-5 h-5 mr-3 text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                            </svg>
+                            Siswa & Nilai
+                        </div>
+                        <svg class="w-4 h-4 transition-transform duration-200" :class="{'rotate-180': openMenu}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+
+                    <div x-show="openMenu" x-collapse class="pl-11 pr-4 space-y-1">
+                        <a href="{{ route('teacher.students.index') }}"
+                            class="block px-4 py-2 text-sm font-medium rounded-lg transition-colors {{ request()->routeIs('teacher.students.index') ? 'bg-indigo-50 text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-400' : 'text-gray-500 hover:text-indigo-600 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-700/30' }}">
+                            Daftar Siswa
+                        </a>
+                        <a href="{{ route('teacher.students.grades') }}"
+                            class="block px-4 py-2 text-sm font-medium rounded-lg transition-colors {{ request()->routeIs('teacher.students.grades') ? 'bg-indigo-50 text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-400' : 'text-gray-500 hover:text-indigo-600 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-700/30' }}">
+                            Rekapitulasi Nilai
+                        </a>
+                        <a href="{{ route('teacher.students.progress') }}"
+                            class="block px-4 py-2 text-sm font-medium rounded-lg transition-colors {{ request()->routeIs('teacher.students.progress') ? 'bg-indigo-50 text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-400' : 'text-gray-500 hover:text-indigo-600 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-700/30' }}">
+                            Progress Siswa
+                        </a>
+                    </div>
+                </div>
 
                 @endif
 

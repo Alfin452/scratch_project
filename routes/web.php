@@ -67,6 +67,11 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('independent-tasks', IndependentTaskController::class)->except(['show', 'edit', 'update']);
 
+    // Manajemen Siswa (Guru)
+    Route::get('/teacher/students', [App\Http\Controllers\StudentManagementController::class, 'index'])->name('teacher.students.index');
+    Route::get('/teacher/students/grades', [App\Http\Controllers\StudentManagementController::class, 'grades'])->name('teacher.students.grades');
+    Route::get('/teacher/students/progress', [App\Http\Controllers\StudentManagementController::class, 'progress'])->name('teacher.students.progress');
+
     // Master Kelas & Pemilihan Kelas
     Route::resource('classrooms', ClassroomController::class)->except(['show', 'create', 'edit']);
     Route::post('/student/select-class', [DashboardController::class, 'selectClass'])->name('student.select-class');
