@@ -38,7 +38,7 @@
                 $readingTimeSeconds = 30;
             @endphp
 
-            <div class="flex flex-col lg:flex-row gap-8 justify-center" x-data="readingTimer({{ $readingTimeSeconds }})" x-init="startTimer()">
+            <div class="flex flex-col lg:flex-row gap-8 justify-center">
 
                 {{-- KONTEN UTAMA --}}
                 <div class="w-full lg:w-3/4 space-y-8">
@@ -87,21 +87,16 @@
                                     }
                                 @endphp
 
-                                <button id="btn-complete" @click="markCompleteAndProceed('{{ $nextUrl }}')" :disabled="!canProceed"
-                                    :class="canProceed ? 'bg-emerald-500 hover:bg-emerald-600' : 'bg-gray-400 cursor-not-allowed'"
-                                    class="inline-flex items-center px-8 py-3 text-white font-bold rounded-xl shadow-lg hover:shadow-emerald-500/30 transition-all transform w-full md:w-auto justify-center">
-                                    
-                                    <span x-show="!canProceed" x-text="`Selesaikan membaca (${Math.floor(timeLapse / 60).toString().padStart(2, '0')}:${(timeLapse % 60).toString().padStart(2, '0')})`"></span>
-
-                                    <div x-show="canProceed" class="flex items-center">
-                                        <svg id="btn-spinner" class="w-5 h-5 mr-2 animate-spin hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                                        <svg id="btn-icon" class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                                        Tandai Selesai & Lanjut
-                                    </div>
-                                </button>
+                    <form method="POST" action="{{ route('sub_modules.complete', $subModule->id) }}">
+                        @csrf
+                        <input type="hidden" name="next_url" value="{{ $nextUrl }}">
+                        <button type="submit" id="btn-complete" class="bg-emerald-500 hover:bg-emerald-600 inline-flex items-center px-8 py-3 text-white font-bold rounded-xl shadow-lg hover:shadow-emerald-500/30 transition-all transform w-full md:w-auto justify-center">
+                            <div class="flex items-center">
+                                <svg id="btn-icon" class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                Tandai Selesai & Lanjut
                             </div>
-                        </div>
-                    </div>
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -112,52 +107,23 @@
         document.addEventListener("DOMContentLoaded", (event) => {
             gsap.to(".gsap-fade-down", { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" });
             gsap.to(".gsap-content", { opacity: 1, y: 0, duration: 0.8, delay: 0.2, ease: "power3.out" });
-        });
-
-        function readingTimer(duration) {
-            const subModuleId = {{ $subModule->id }};
-            const storageKey = `read_timer_submodule_${subModuleId}`;
             
-            // Timer dinonaktifkan sementara sesuai permintaan
-            let timeRemaining = 0;
-
-            return {
-                timeLapse: timeRemaining,
-                canProceed: true,
-                startTimer() {
-                    this.canProceed = true;
-                    return;
-                },
-                markCompleteAndProceed(nextUrl) {
-                    if (!this.canProceed) return;
-                    
-                    const btn = document.getElementById('btn-complete');
-                    const spinner = document.getElementById('btn-spinner');
+            // Hapus sisa-sisa local storage timer yang mungkin masih menyangkut di browser
+            const subModuleId = {{ $subModule->id }};
+            localStorage.removeItem(`read_timer_submodule_${subModuleId}`);
+            
+            // Event listener untuk tombol (opsional, karena kita pakai form submit)
+            const btn = document.getElementById('btn-complete');
+            if(btn) {
+                btn.addEventListener('click', function() {
                     const icon = document.getElementById('btn-icon');
-                    
-                    btn.disabled = true;
-                    icon.classList.add('hidden');
-                    spinner.classList.remove('hidden');
-
-                    fetch('{{ route('sub_modules.complete', $subModule->id) }}', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        },
-                        body: JSON.stringify({})
-                    }).then(response => response.json())
-                    .then(data => {
-                        localStorage.removeItem(storageKey);
-                        window.location.href = nextUrl;
-                    }).catch(error => {
-                        console.error('Error:', error);
-                        localStorage.removeItem(storageKey);
-                        window.location.href = nextUrl; // Tetap lanjut walau error biar tidak blocking UX
-                    });
-                }
+                    if(icon) {
+                        icon.outerHTML = '<svg id="btn-spinner" class="w-5 h-5 mr-2 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>';
+                    }
+                    btn.classList.add('opacity-75', 'cursor-wait');
+                });
             }
-        }
+        });
     </script>
 
     <style>

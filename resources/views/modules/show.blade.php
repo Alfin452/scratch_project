@@ -234,40 +234,26 @@
                             </div>
 
                             <div class="w-full md:w-auto">
-                                {{-- KONTEN ASLI (Tersembunyi sampai timer selesai) --}}
-                                <div id="next-action-unlocked" class="hidden">
-                                    @if($next)
-                                    <a href="{{ route('modules.show', $next->id) }}" class="group flex items-center justify-end p-3 rounded-xl hover:bg-white dark:hover:bg-gray-800 hover:shadow-md transition-all duration-300 border border-transparent hover:border-gray-100 dark:hover:border-gray-700">
-                                        <div class="text-right">
-                                            <div class="text-xs text-gray-400 uppercase font-bold">Selanjutnya</div>
-                                            <div class="font-semibold text-gray-700 dark:text-gray-200 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{{ Str::limit($next->title, 20) }}</div>
-                                        </div>
-                                        <div class="w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 flex items-center justify-center ml-3 group-hover:scale-110 transition-transform">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                                            </svg>
-                                        </div>
-                                    </a>
-                                    @else
-                                    <a href="{{ route('modules.index') }}" class="inline-flex items-center px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg hover:shadow-indigo-500/30 transition-all transform hover:-translate-y-1">
-                                        Selesai Belajar
-                                        <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                @if($next)
+                                <a href="{{ route('modules.show', $next->id) }}" class="group flex items-center justify-end p-3 rounded-xl hover:bg-white dark:hover:bg-gray-800 hover:shadow-md transition-all duration-300 border border-transparent hover:border-gray-100 dark:hover:border-gray-700">
+                                    <div class="text-right">
+                                        <div class="text-xs text-gray-400 uppercase font-bold">Selanjutnya</div>
+                                        <div class="font-semibold text-gray-700 dark:text-gray-200 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{{ Str::limit($next->title, 20) }}</div>
+                                    </div>
+                                    <div class="w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 flex items-center justify-center ml-3 group-hover:scale-110 transition-transform">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                                         </svg>
-                                    </a>
-                                    @endif
-                                </div>
-
-                                {{-- TOMBOL TERKUNCI --}}
-                                <div id="next-action-locked" class="flex">
-                                    <button disabled class="inline-flex items-center px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 font-bold rounded-xl cursor-not-allowed transition-all">
-                                        <svg class="w-5 h-5 mr-2 animate-spin text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                        </svg>
-                                        <span id="reading-timer-text">Membaca... (00:00)</span>
-                                    </button>
-                                </div>
+                                    </div>
+                                </a>
+                                @else
+                                <a href="{{ route('modules.index') }}" class="inline-flex items-center px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg hover:shadow-indigo-500/30 transition-all transform hover:-translate-y-1">
+                                    Selesai Belajar
+                                    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                </a>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -360,53 +346,10 @@
                 gsap.to(taskSection, { scrollTrigger: { trigger: taskSection, start: "top 85%" }, opacity: 1, y: 0, duration: 0.8, ease: "power3.out" });
                 gsap.to(".gsap-task-card", { scrollTrigger: { trigger: taskSection, start: "top 80%" }, opacity: 1, y: 0, stagger: 0.1, duration: 0.6, ease: "back.out(1.5)" });
             }
-
-            // ==========================================
-            // READING TIMER LOGIC
-            // ==========================================
-            const moduleId = {{ $module->id }};
-            const targetSeconds = parseInt('{{ $readingTimeSeconds }}');
-            const storageKey = `read_timer_module_${moduleId}`;
             
-            // Timer dinonaktifkan sementara
-            let timeRemaining = 0;
-
-            const lockedEl = document.getElementById('next-action-locked');
-            const unlockedEl = document.getElementById('next-action-unlocked');
-            const timerText = document.getElementById('reading-timer-text');
-
-            function updateTimerDisplay() {
-                if(timeRemaining <= 0) {
-                    // Waktu habis, tampilkan tombol asli
-                    lockedEl.classList.add('hidden');
-                    lockedEl.classList.remove('flex');
-                    unlockedEl.classList.remove('hidden');
-                    
-                    // Supaya ada sedikit efek saat memunculkan
-                    gsap.fromTo(unlockedEl, {opacity: 0, x: -10}, {opacity: 1, x: 0, duration: 0.5});
-                    return;
-                }
-
-                // Format menit dan detik
-                const minutes = Math.floor(timeRemaining / 60);
-                const seconds = timeRemaining % 60;
-                timerText.textContent = `Membaca... (${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')})`;
-            }
-
-            // Jalankan perdana
-            updateTimerDisplay();
-
-            if(timeRemaining > 0) {
-                const interval = setInterval(() => {
-                    timeRemaining--;
-                    localStorage.setItem(storageKey, timeRemaining);
-                    updateTimerDisplay();
-
-                    if(timeRemaining <= 0) {
-                        clearInterval(interval);
-                    }
-                }, 1000);
-            }
+            // Hapus sisa-sisa local storage timer yang mungkin masih menyangkut di browser
+            const moduleId = {{ $module->id }};
+            localStorage.removeItem(`read_timer_module_${moduleId}`);
         });
     </script>
 

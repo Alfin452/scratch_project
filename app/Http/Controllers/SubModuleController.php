@@ -133,6 +133,10 @@ class SubModuleController extends Controller
             'completed_at' => now(),
         ]);
 
+        if ($request->has('next_url')) {
+            return redirect($request->next_url);
+        }
+
         return response()->json(['success' => true]);
     }
 }
