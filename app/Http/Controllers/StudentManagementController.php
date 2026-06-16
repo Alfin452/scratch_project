@@ -13,14 +13,25 @@ use Carbon\Carbon;
 class StudentManagementController extends Controller
 {
     // 1. Daftar Siswa
-    public function index()
+    public function index(Request $request)
     {
-        $students = User::where('role', 'student')
-            ->with('classroom')
-            ->latest()
-            ->get();
+        $classrooms = \App\Models\Classroom::all();
+        
+        $query = User::where('role', 'student')->with('classroom');
 
-        return view('teacher.students.index', compact('students'));
+        // Filter search
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+
+        // Filter kelas
+        if ($request->filled('classroom_id')) {
+            $query->where('classroom_id', $request->classroom_id);
+        }
+
+        $students = $query->latest()->get();
+
+        return view('teacher.students.index', compact('students', 'classrooms'));
     }
 
     // 2. Rekapitulasi Nilai (Matriks)

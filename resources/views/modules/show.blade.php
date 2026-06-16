@@ -368,9 +368,8 @@
             const targetSeconds = parseInt('{{ $readingTimeSeconds }}');
             const storageKey = `read_timer_module_${moduleId}`;
             
-            // Ambil sisa waktu dari local storage. Jika tidak ada, gunakan target waktu asli.
-            let savedTime = localStorage.getItem(storageKey);
-            let timeRemaining = savedTime !== null ? parseInt(savedTime) : targetSeconds;
+            // Timer dinonaktifkan sementara
+            let timeRemaining = 0;
 
             const lockedEl = document.getElementById('next-action-locked');
             const unlockedEl = document.getElementById('next-action-unlocked');

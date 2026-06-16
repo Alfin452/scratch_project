@@ -118,33 +118,15 @@
             const subModuleId = {{ $subModule->id }};
             const storageKey = `read_timer_submodule_${subModuleId}`;
             
-            let savedTime = localStorage.getItem(storageKey);
-            let timeRemaining = savedTime !== null ? parseInt(savedTime) : duration;
-            
-            if (timeRemaining <= 0) {
-                timeRemaining = 0;
-            }
+            // Timer dinonaktifkan sementara sesuai permintaan
+            let timeRemaining = 0;
 
             return {
                 timeLapse: timeRemaining,
-                canProceed: timeRemaining <= 0,
+                canProceed: true,
                 startTimer() {
-                    if (this.timeLapse <= 0) {
-                        this.canProceed = true;
-                        localStorage.setItem(storageKey, 0);
-                        return;
-                    }
-                    
-                    let interval = setInterval(() => {
-                        if (this.timeLapse > 0) {
-                            this.timeLapse--;
-                            localStorage.setItem(storageKey, this.timeLapse);
-                        } else {
-                            this.canProceed = true;
-                            localStorage.setItem(storageKey, 0);
-                            clearInterval(interval);
-                        }
-                    }, 1000);
+                    this.canProceed = true;
+                    return;
                 },
                 markCompleteAndProceed(nextUrl) {
                     if (!this.canProceed) return;
