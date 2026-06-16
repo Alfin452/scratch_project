@@ -34,8 +34,8 @@
 
             @php
                 $wordCount = str_word_count(strip_tags($subModule->content));
-                // Hitung target detik: 30 kata per menit (sangat lambat/teliti). Minimal 300 detik (5 menit) mutlak.
-                $readingTimeSeconds = max(300, ceil(($wordCount / 30) * 60));
+                // Target detik diset statis menjadi 30 detik
+                $readingTimeSeconds = 30;
             @endphp
 
             <div class="flex flex-col lg:flex-row gap-8 justify-center" x-data="readingTimer({{ $readingTimeSeconds }})" x-init="startTimer()">

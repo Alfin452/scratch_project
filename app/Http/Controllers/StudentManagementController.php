@@ -24,8 +24,10 @@ class StudentManagementController extends Controller
     }
 
     // 2. Rekapitulasi Nilai (Matriks)
-    public function grades()
+    public function grades(Request $request)
     {
+        $classrooms = \App\Models\Classroom::all();
+
         // Ambil semua task yang berhubungan dengan modul, diurutkan berdasarkan modul dan urutan tugas
         $tasks = Task::with('module')
             ->whereNotNull('module_id')
@@ -35,28 +37,51 @@ class StudentManagementController extends Controller
             ->select('tasks.*')
             ->get();
 
-        // Ambil semua siswa beserta submission mereka untuk memetakan nilai
-        $students = User::where('role', 'student')
-            ->with(['submissions' => function($query) {
-                $query->select('id', 'user_id', 'task_id', 'score');
-            }, 'classroom'])
-            ->get();
+        $query = User::where('role', 'student')
+            ->with(['submissions' => function($q) {
+                $q->select('id', 'user_id', 'task_id', 'score');
+            }, 'classroom']);
 
-        return view('teacher.students.grades', compact('students', 'tasks'));
+        // Filter search
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+
+        // Filter kelas
+        if ($request->filled('classroom_id')) {
+            $query->where('classroom_id', $request->classroom_id);
+        }
+
+        // Ambil semua siswa beserta submission mereka untuk memetakan nilai
+        $students = $query->get();
+
+        return view('teacher.students.grades', compact('students', 'tasks', 'classrooms'));
     }
 
     // 3. Progress Siswa
-    public function progress()
+    public function progress(Request $request)
     {
+        $classrooms = \App\Models\Classroom::all();
         $totalSubModules = SubModule::count();
         $totalTasks = Task::count();
 
-        // Ambil semua siswa dengan relasi yang dibutuhkan
-        $students = User::where('role', 'student')
+        $query = User::where('role', 'student')
             ->with('classroom')
             ->withCount('submissions as completed_tasks') // jumlah tugas yang dikerjakan (submission)
-            ->withCount('submissions as active_submissions') 
-            ->get();
+            ->withCount('submissions as active_submissions');
+
+        // Filter search
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+
+        // Filter kelas
+        if ($request->filled('classroom_id')) {
+            $query->where('classroom_id', $request->classroom_id);
+        }
+
+        // Ambil semua siswa dengan relasi yang dibutuhkan
+        $students = $query->get();
 
         // Ambil kemajuan bacaan materi (SubModule)
         $progressMateri = StudentProgress::selectRaw('user_id, count(*) as total_read')
@@ -81,6 +106,13 @@ class StudentManagementController extends Controller
             }
         }
 
-        return view('teacher.students.progress', compact('students', 'totalSubModules', 'totalTasks'));
+        // Filter status (dilakukan pada collection karena dihitung manual)
+        if ($request->filled('status')) {
+            $students = $students->filter(function($student) use ($request) {
+                return $student->status === $request->status;
+            });
+        }
+
+        return view('teacher.students.progress', compact('students', 'totalSubModules', 'totalTasks', 'classrooms'));
     }
 }

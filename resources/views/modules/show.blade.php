@@ -335,8 +335,8 @@
     @php
         $moduleContent = $module->content ?? '';
         $wordCount = str_word_count(strip_tags($moduleContent));
-        // Hitung target detik: 30 kata per menit (sangat lambat/teliti). Minimal 300 detik (5 menit) mutlak.
-        $readingTimeSeconds = max(300, ceil(($wordCount / 30) * 60));
+        // Target detik diset statis menjadi 30 detik
+        $readingTimeSeconds = 30;
     @endphp
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
