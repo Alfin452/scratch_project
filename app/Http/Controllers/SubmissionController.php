@@ -34,8 +34,8 @@ class SubmissionController extends Controller
 
             $submission->update([
                 'project_file_path' => $path,
-                'status' => 'graded',
-                'score' => 100,
+                'status' => 'submitted',
+                'score' => null,
             ]);
         } else {
             // Buat submission baru
@@ -43,12 +43,12 @@ class SubmissionController extends Controller
                 'user_id' => $user->id,
                 'task_id' => $task->id,
                 'project_file_path' => $path,
-                'status' => 'graded',
-                'score' => 100,
+                'status' => 'submitted',
+                'score' => null,
             ]);
         }
 
-        return response()->json(['message' => 'Tugas berhasil dikumpulkan!'], 200);
+        return response()->json(['message' => 'Tugas berhasil dikumpulkan! Menunggu penilaian guru.'], 200);
     }
 
     // ... method store yang lama ...

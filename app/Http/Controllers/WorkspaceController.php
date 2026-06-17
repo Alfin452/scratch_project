@@ -230,20 +230,20 @@ class WorkspaceController extends Controller
 
             $submission->update([
                 'project_file_path' => $path,
-                'status'            => 'graded',
-                'score'             => 100,
+                'status'            => 'submitted',
+                'score'             => null,
             ]);
         } else {
             \App\Models\Submission::create([
                 'user_id'           => \Illuminate\Support\Facades\Auth::id(),
                 'task_id'           => $task->id,
                 'project_file_path' => $path,
-                'status'            => 'graded',
-                'score'             => 100,
+                'status'            => 'submitted',
+                'score'             => null,
             ]);
         }
 
-        return back()->with('success', 'Tugas berhasil dikumpulkan!');
+        return back()->with('success', 'Tugas berhasil dikumpulkan! Menunggu penilaian guru.');
     }
 
     public function retry(Request $request, Task $task)
